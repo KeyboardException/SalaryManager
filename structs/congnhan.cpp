@@ -37,14 +37,14 @@ struct CongNhan {
 		getl(SDT);
 
 		//        + Ngay Sinh (dd/mm/yyyy):
-		ngaySinh.input("Ngay Sinh");
+		ngaySinh.input(" + Ngay Sinh");
 	}
 
 	void print() {
 		cout
 			<< setw(8) << maCN
 			<< setw(18) << hoTen
-			<< setw(5) << queQuan
+			<< setw(16) << queQuan
 			<< setw(14) << SDT
 			<< setw(12) << ngaySinh
 			<< endl;
@@ -65,12 +65,12 @@ struct CongNhan {
 struct CongNhanList {
 	struct Node {
 		CongNhan info;
-		Node *next;
+		Node *next = NULL;
 	};
 
 	struct List {
-		Node *head;
-		Node *tail;
+		Node *head = NULL;
+		Node *tail = NULL;
 	};
 
 	List list;
@@ -144,7 +144,7 @@ struct CongNhanList {
 		cout
 			<< setw(8) << "Ma CN"
 			<< setw(18) << "Ho Ten"
-			<< setw(5) << "Que Quan"
+			<< setw(16) << "Que Quan"
 			<< setw(14) << "SDT"
 			<< setw(12) << "Ngay Sinh"
 			<< endl;

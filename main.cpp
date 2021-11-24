@@ -24,5 +24,14 @@
 using namespace std;
 
 int main() {
-	
+	CongNhanList congNhanList;
+
+	CongNhan cn;
+	cn.input();
+	cn.print();
+
+	congNhanList.push(cn);
+	congNhanList.save();
+
+	return 0;
 }

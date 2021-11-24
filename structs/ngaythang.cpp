@@ -7,8 +7,11 @@
  * @version	1.0
  */
 
+#include <cstdlib>
 #include <iostream>
 #include <iomanip>
+#include <string>
+#include <funcs.cpp>
 
 using namespace std;
 
@@ -18,9 +21,27 @@ struct NgayThang {
 	int nam;
 
 	void input(string prompt = "Ngay Thang") {
-		cin.ignore();
+		int s = 0;
+		string input;
+
 		cout << prompt << " (dd/mm/yyyy): ";
-		scanf("%d/%d/%d", ngay, thang, nam);
+		getline(cin >> ws, input);
+		
+		int start = 0;
+		int end = input.find('/');
+
+		// Ngay
+		ngay = stoi(input.substr(start, end - start));
+		start = end + 1;
+		end = input.find('/', start);
+
+		// Thang
+		thang = stoi(input.substr(start, end - start));
+		start = end + 1;
+		end = input.find('/', start);
+
+		// Nam
+		nam = stoi(input.substr(start, end - start));
 	}
 
 	friend ostream& operator<<(ostream& os, NgayThang n) {
