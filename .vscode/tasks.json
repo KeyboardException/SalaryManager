@@ -22,12 +22,12 @@
                 "revealProblems": "always"
             },
             "dependsOn": [
-                "C/C++: build"
+                "C/C++: g++.exe build"
             ]
         },
         {
             "type": "shell",
-            "label": "C/C++: build",
+            "label": "C/C++: g++.exe build",
             "command": "g++",
             "args": [
                 "-g",
