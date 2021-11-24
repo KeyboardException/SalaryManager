@@ -6,7 +6,7 @@
             "command": "start ${workspaceFolder}\\.vscode\\exec.bat ${workspaceFolder}\\build.exe",
             "problemMatcher": [],
             "options": {
-                "cwd": "${fileDirname}",
+                "cwd": "${workspaceFolder}",
                 "statusbar": {
                     "label": "$(run) CHẠY",
                     "color": "#eaff5e"
