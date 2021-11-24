@@ -41,7 +41,7 @@
                 "cwd": "${workspaceFolder}"
             },
             "windows": {
-                "command": "C:\\Tools\\mingw\\bin\\g++.exe",
+                "command": "g++.exe",
                 "args": [
                     "-g",
                     "${workspaceFolder}\\main.cpp",
