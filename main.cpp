@@ -23,41 +23,6 @@
 
 using namespace std;
 
-/**
- * Sử dụng bảng băm với khóa được băm bằng thuật toán
- * tách m
- */
-struct SanPham {
-	// FORMAT: CCYYMMDDVV
-	// EX    : VN21111901
-	char maSP[8];
-	char tenSP[50];
-	float donGia;
-};
-
-struct SanPhamBangLuong {
-	char maSP[8];
-	int soLuong;
-	float thanhTien;
-};
-
-/**
- * Sử dụng liên kết đôi
- */
-struct BangLuong {
-	int maBL;
-	int thang;
-	int nam;
-	int maCN;
-	SanPhamBangLuong sanPham[50];
-	int tongSo;
-	float tongTien;
-};
-
-//* |=========================================================|
-//* |                          MAIN                           |
-//* |=========================================================|
-
 int main() {
 
 }

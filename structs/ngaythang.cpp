@@ -1,5 +1,5 @@
 /**
- * CÔNG NHÂN
+ * NGÀY THÁNG
  * 
  * File này chứa khai báo cấu trúc của đối tượng Ngày Tháng.
  * 

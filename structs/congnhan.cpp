@@ -50,7 +50,7 @@ struct CongNhan {
 			<< endl;
 	}
 
-	friend ostream& operator<<(ostream& os, CongNhan cn) {
+	friend ostream &operator<<(ostream &os, CongNhan cn) {
 		os << cn.hoTen;
 		return os;
 	}
@@ -96,7 +96,7 @@ struct CongNhanList {
 
 		do {
 			CongNhan congNhan;
-			fread(&congNhan, sizeof(congNhan), 1, fileHandler);
+			fread(&congNhan, sizeof(CongNhan), 1, fileHandler);
 			push(congNhan);
 		} while(!feof(fileHandler));
 
@@ -105,7 +105,7 @@ struct CongNhanList {
 
 	/**
 	 * Chèn thêm một công nhân mới vào cuối danh sách
-	 * @param	CongNhan	Công nhân cần chèn
+	 * @param	congNhan	Công nhân cần chèn
 	 */
 	void push(CongNhan congNhan) {
 		Node *node;
