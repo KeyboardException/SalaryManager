@@ -1,0 +1,19 @@
+{
+    "configurations": [
+        {
+            "name": "Win32",
+            "compilerPath": "C:\\Tools\\mingw\\bin\\g++.exe",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/structs/**"
+            ],
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE"
+            ],
+            "intelliSenseMode": "gcc-x86"
+        }
+    ],
+    "version": 4
+}

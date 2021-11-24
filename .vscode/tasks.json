@@ -1,0 +1,76 @@
+{
+    "tasks": [
+        {
+            "type": "shell",
+            "label": "C/C++: Build and Run (Windows)",
+            "command": "start ${workspaceFolder}\\.vscode\\exec.bat ${workspaceFolder}\\build.exe",
+            "problemMatcher": [],
+            "options": {
+                "cwd": "${fileDirname}",
+                "statusbar": {
+                    "label": "$(run) CHẠY",
+                    "color": "#eaff5e"
+                }
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "dedicated",
+                "showReuseMessage": true,
+                "clear": false,
+                "revealProblems": "always"
+            },
+            "dependsOn": [
+                "C/C++: build"
+            ]
+        },
+        {
+            "type": "shell",
+            "label": "C/C++: build",
+            "command": "g++",
+            "args": [
+                "-g",
+                "${workspaceFolder}\\main.cpp",
+                "-I${workspaceFolder}",
+                "-I${workspaceFolder}\\structs",
+                "-o",
+                "${workspaceFolder}\\build",
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "windows": {
+                "command": "C:\\Tools\\mingw\\bin\\g++.exe",
+                "args": [
+                    "-g",
+                    "${workspaceFolder}\\main.cpp",
+                    "-I${workspaceFolder}",
+                    "-I${workspaceFolder}\\structs",
+                    "-o",
+                    "${workspaceFolder}\\build.exe",
+                    "-v"
+                ],
+                "options": {
+                    "cwd": "${workspaceFolder}"
+                },
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "dedicated",
+                "showReuseMessage": false,
+                "clear": true
+            }
+        }
+    ],
+    "version": "2.0.0"
+}

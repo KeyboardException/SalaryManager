@@ -1,0 +1,1 @@
+g++ -g main.cpp -I. -I.\structs -o build.exe -v
