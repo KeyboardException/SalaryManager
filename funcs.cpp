@@ -7,10 +7,11 @@
 
 #pragma once
 #include <iostream>
+#include <cstdio>
 
 using namespace std;
 
 void getl(char value[]) {
-	cin.ignore();
+	cin.ignore(0);
 	gets(value);
 }

@@ -32,13 +32,12 @@ int main() {
 	congNhanList.load();
 	congNhanList.print();
 
-	SanPham sanPham;
-	sanPham.input();
-	sanPhamList.insert(sanPham);
-	sanPhamList.save();
-
-	// sanPhamList.load();
-	// sanPhamList.print();
+	// SanPham sanPham;
+	// sanPham.input();
+	// sanPhamList.insert(sanPham);
+	// sanPhamList.save();
+	sanPhamList.load();
+	sanPhamList.print();
 
 	bangLuong.setCongNhanList(&congNhanList);
 	bangLuong.setSanPhamList(&sanPhamList);

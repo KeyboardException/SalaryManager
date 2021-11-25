@@ -18,7 +18,7 @@
 using namespace std;
 
 struct SanPham {
-	char maSP[10];
+	char maSP[12];
 	char tenSP[50];
 	float donGia;
 
@@ -39,6 +39,13 @@ struct SanPham {
 		cout << " + Đơn Giá                 : ";
 		cin >> donGia;
 	}
+
+	friend ostream &operator<<(ostream &os, SanPham sp) {
+		stringstream str;
+		str << "[" << setw(10) << sp.maSP << "] " << sp.tenSP;
+		os << str.str();
+		return os;
+	}
 };
 
 struct SanPhamList {
@@ -48,45 +55,28 @@ struct SanPhamList {
 		Node* right = NULL;
 	};
 
-	Node tree;
+	Node* tree = NULL;
 	char file[13] = "sanpham.dat";
 
 	/**
 	 * Chèn thêm một sản phẩm mới vào cây
 	 * @param	SanPham		Sản phẩm cần chèn
 	 */
-	void insert(SanPham info, Node* root = NULL, bool traveling = false) {
-		if (root == NULL && !traveling)
-			root = &tree;
-
-		if (root != NULL) {
-			int cmp = strcmp(info.maSP, root -> info.maSP);
-
-			if (cmp < 0)
-				insert(info, root -> left, true);
-			else if (cmp > 0)
-				insert(info, root -> right, true);
-			else {
-				cout << "ERROR SanPhamList::insert(): Sản Phẩm " << info.maSP << " đã tồn tại trong cây!" << endl;
-				return;
-			}
-		} else {
-			root = new Node;
-			root -> info = info;
-		}
+	void insert(SanPham info) {
+		__insert(info, tree);
 	}
 
 	void save() {
 		cout << "Đang lưu " << file << "..." << endl;
 		FILE* fileHandler = fopen(file, "wb");
 
-		__saveLNR(&tree, fileHandler);
+		__saveLNR(tree, fileHandler);
 		fclose(fileHandler);
 	}
 
 	void load() {
 		cout << "Đang đọc " << file << "..." << endl;
-		tree = *new Node;
+		tree = NULL;
 		FILE* fileHandler = fopen(file, "rb");
 
 		do {
@@ -104,7 +94,7 @@ struct SanPhamList {
 	 */
 	void print() {
 		cout << "       Mã SP                      Tên SP             Đơn Giá" << endl;
-		__printLNR(&tree);
+		__printLNR(tree);
 	}
 
 	class NotFound : public exception {
@@ -123,11 +113,42 @@ struct SanPhamList {
 	 * @throw	SanPhamList::NotFound
 	 */
 	SanPham getSanPham(char maSP[8]) {
-
-		throw NotFound();
+		return __get(maSP, tree);
 	}
 
 	private:
+		void __insert(SanPham info, Node* &root) {
+			if (root != NULL) {
+				int cmp = strcmp(info.maSP, root -> info.maSP);
+
+				if (cmp < 0)
+					__insert(info, root -> left);
+				else if (cmp > 0)
+					__insert(info, root -> right);
+				else {
+					cout << "ERROR SanPhamList::insert(): Sản Phẩm " << info.maSP << " đã tồn tại trong cây!" << endl;
+					return;
+				}
+			} else {
+				root = new Node;
+				root -> info = info;
+			}
+		}
+
+		SanPham __get(char maSP[8], Node* root) {
+			if (root == NULL)
+				throw NotFound();
+
+			int cmp = strcmp(maSP, root -> info.maSP);
+
+			if (cmp == 0)
+				return root -> info;
+			else if (cmp < 0)
+				return __get(maSP, root -> left);
+			else
+				return __get(maSP, root -> right);
+		}
+
 		void __printLNR(Node* root) {
 			if (root == NULL)
 				return;

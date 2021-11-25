@@ -19,9 +19,30 @@ const float THUE = 0.03f;
 
 struct BangLuong {
 	struct SanPhamBangLuong {
-		char maSP[8];
+		char maSP[12];
 		int soLuong;
 		float thanhTien;
+
+		void input(SanPhamList* sanPhamList) {
+			SanPham sp;
+			while (true) {
+				cout << " + Nhập Mã Sản Phẩm: ";
+				getl(maSP);
+
+				try {
+					sp = sanPhamList -> getSanPham(maSP);
+					cout << "   Sản Phẩm " << sp << endl;
+					break;
+				} catch (SanPhamList::NotFound error) {
+					cout << "EXCP BangLuong::show(2): " << error.what() << endl;
+				}
+			}
+
+			cout << " + Số Lượng        : ";
+			cin >> soLuong;
+
+			thanhTien = sp.donGia * soLuong;
+		}
 	};
 
 	int maBL;
@@ -103,24 +124,21 @@ struct BangLuong {
 		cout << "   |  STT   Tên SP                           SL    Đơn Giá         Thành Tiền  |" << endl;
 
 		tongTien = .0f;
-		float thanhTien = 0;
-
 		if (soLuong > 0) {
 			SanPham sp;
 
 			for (int i = 0; i < soLuong; i++) {
 				sp = sanPhamList -> getSanPham(sanPham[i].maSP);
-				thanhTien = sanPham[i].soLuong * sp.donGia;
 
 				cout << "   |  "
 					<< right << setw(3) << i + 1 << "   "
 					<< left << setw(33) << sp.tenSP
 					<< right << setw(2) << sanPham[i].soLuong << " "
 					<< right << setw(10) << sp.donGia
-					<< right << setw(18) << thanhTien
+					<< right << setw(19) << sanPham[i].thanhTien
 					<< "  |" << endl;
 
-				tongTien += thanhTien;
+				tongTien += sanPham[i].thanhTien;
 			}
 
 			free(&sp);
@@ -213,6 +231,13 @@ struct BangLuong {
 					break;
 				
 				case 2:
+					sanPhamList -> print();
+					cout << endl;
+
+					SanPhamBangLuong spbl;
+					spbl.input(sanPhamList);
+
+					sanPham[soLuong++] = spbl;
 					break;
 				
 				case 3:
