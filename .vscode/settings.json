@@ -74,6 +74,9 @@
 		"scoped_allocator": "cpp",
 		"shared_mutex": "cpp",
 		"thread": "cpp",
-		"variant": "cpp"
+		"variant": "cpp",
+		"xiosbase": "cpp",
+		"xlocale": "cpp",
+		"xmemory": "cpp"
 	}
 }

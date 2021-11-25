@@ -7,6 +7,7 @@
  * @version	1.0
  */
 
+#pragma once
 #include <cstdlib>
 #include <iostream>
 #include <iomanip>

@@ -8,6 +8,7 @@
  * @version	1.0
  */
 
+#pragma once
 #include <iostream>
 #include <iomanip>
 #include <filesystem>
@@ -24,20 +25,20 @@ struct CongNhan {
 	NgayThang ngaySinh;
 
 	void input() {
-		cout << " + Ma Cong Nhan          : ";
+		cout << " + Mã Công Nhân          : ";
 		cin >> maCN;
 
-		cout << " + Ho Ten Cong Nhan      : ";
+		cout << " + Họ Tên Công Nhân      : ";
 		getl(hoTen);
 
-		cout << " + Que Quan              : ";
+		cout << " + Quê Quán              : ";
 		getl(queQuan);
 
-		cout << " + SDT (<= 14 ki tu)     : ";
+		cout << " + SDT (<= 14 kí tự)     : ";
 		getl(SDT);
 
 		//        + Ngay Sinh (dd/mm/yyyy):
-		ngaySinh.input(" + Ngay Sinh");
+		ngaySinh.input(" + Ngày Sinh");
 	}
 
 	void print() {
@@ -51,17 +52,13 @@ struct CongNhan {
 	}
 
 	friend ostream &operator<<(ostream &os, CongNhan cn) {
-		os << cn.hoTen;
+		stringstream str;
+		str << "[" << setw(3) << cn.maCN << "] " << cn.hoTen;
+		os << str.str();
 		return os;
 	}
 };
 
-/**
- * Cấu trúc của danh sách Công Nhân
- * Sử dụng liên kết đơn
- * 
- * @version	1.0
- */
 struct CongNhanList {
 	struct Node {
 		CongNhan info;
@@ -98,7 +95,7 @@ struct CongNhanList {
 			CongNhan congNhan;
 			fread(&congNhan, sizeof(CongNhan), 1, fileHandler);
 			push(congNhan);
-		} while(!feof(fileHandler));
+		} while (!feof(fileHandler));
 
 		fclose(fileHandler);
 	}
@@ -108,7 +105,7 @@ struct CongNhanList {
 	 * @param	congNhan	Công nhân cần chèn
 	 */
 	void push(CongNhan congNhan) {
-		Node *node;
+		Node *node = new Node;
 		node -> info = congNhan;
 
 		if (list.head == NULL) {
@@ -141,24 +138,35 @@ struct CongNhanList {
 	}
 
 	void print() {
-		cout
-			<< setw(8) << "Ma CN"
-			<< setw(18) << "Ho Ten"
-			<< setw(16) << "Que Quan"
-			<< setw(14) << "SDT"
-			<< setw(12) << "Ngay Sinh"
-			<< endl;
+		cout << "   Mã CN            Họ Tên        Quê Quán           SDT   Ngày Sinh" << endl;
 
 		Node *node;
 		for (node = list.head; node != NULL; node = node -> next)
 			node -> info.print();
 	}
 
+	class NotFound : public exception {
+		public:
+			const char* what() const throw () {
+				return "Công Nhân không tồn tại!";
+			}
+	};
+
+	/**
+	 * Lấy thông tin Công Nhân dựa trên mã Công Nhân,
+	 * throw exception khi không tìm thấy công nhân trong
+	 * danh sách.
+	 * 
+	 * @return	CongNhan
+	 * @throw	CongNhanList::NotFound
+	 */
 	CongNhan getCongNhan(int maCN) {
 		Node *node;
 
 		for (node = list.head; node != NULL; node = node -> next)
 			if (node -> info.maCN == maCN)
 				return node -> info;
+
+		throw NotFound();
 	}
 };

@@ -9,6 +9,7 @@
  * @version	1.0
  */
 
+#pragma once
 #include <iostream>
 #include <iomanip>
 #include <filesystem>
@@ -32,6 +33,10 @@ struct SanPhamList {
 	char file[12] = "sanpham.dat";
 
 	int getKey(char maSP[8]) {
+		
+	}
+
+	SanPham getSanPham(char maSP[8]) {
 		
 	}
 };

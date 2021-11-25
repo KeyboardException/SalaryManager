@@ -20,18 +20,19 @@
 #include <iomanip>
 #include <string>
 #include <congnhan.cpp>
+#include <bangluong.cpp>
 
 using namespace std;
 
 int main() {
 	CongNhanList congNhanList;
+	BangLuong bangLuong;
 
-	CongNhan cn;
-	cn.input();
-	cn.print();
+	congNhanList.load();
+	congNhanList.print();
 
-	congNhanList.push(cn);
-	congNhanList.save();
+	bangLuong.setCongNhanList(&congNhanList);
+	bangLuong.show();
 
 	return 0;
 }
