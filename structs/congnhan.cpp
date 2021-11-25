@@ -62,12 +62,12 @@ struct CongNhan {
 struct CongNhanList {
 	struct Node {
 		CongNhan info;
-		Node *next = NULL;
+		Node* next = NULL;
 	};
 
 	struct List {
-		Node *head = NULL;
-		Node *tail = NULL;
+		Node* head = NULL;
+		Node* tail = NULL;
 	};
 
 	List list;
@@ -75,8 +75,8 @@ struct CongNhanList {
 
 	void save() {
 		cout << "Đang lưu " << file << "..." << endl;
-		Node *node = list.head;
-		FILE *fileHandler = fopen(file, "wb");
+		Node* node = list.head;
+		FILE* fileHandler = fopen(file, "wb");
 
 		while (node) {
 			fwrite(&node -> info, sizeof(CongNhan), 1, fileHandler);
@@ -89,7 +89,7 @@ struct CongNhanList {
 	void load() {
 		cout << "Đang đọc " << file << "..." << endl;
 		list = *new List;
-		FILE *fileHandler = fopen(file, "rb");
+		FILE* fileHandler = fopen(file, "rb");
 
 		do {
 			CongNhan congNhan;
@@ -105,7 +105,7 @@ struct CongNhanList {
 	 * @param	congNhan	Công nhân cần chèn
 	 */
 	void push(CongNhan congNhan) {
-		Node *node = new Node;
+		Node* node = new Node;
 		node -> info = congNhan;
 
 		if (list.head == NULL) {
@@ -119,28 +119,35 @@ struct CongNhanList {
 	}
 
 	/**
-	 * Xóa một công nhân ở phía cuối danh sách.
+	 * Xóa một công nhân ở phía cuối danh sách và trả về công nhân
+	 * đã bị xóa.
+	 * 
+	 * @return	CongNhan
 	 */
-	void pop() {
+	CongNhan* pop() {
 		if (list.tail == NULL)
-			return;
+			return NULL;
 
-		Node *node;
+		CongNhan* info;
+		Node* node;
 
 		for (node = list.head; node != NULL; node = node -> next)
 			if (node -> next == list.tail) {
 				list.tail = node;
+				info = &(node -> next -> info);
 				free(node -> next);
 				node -> next = NULL;
 
-				return;
+				return info;
 			}
+
+		return NULL;
 	}
 
 	void print() {
 		cout << "   Mã CN            Họ Tên        Quê Quán           SDT   Ngày Sinh" << endl;
 
-		Node *node;
+		Node* node;
 		for (node = list.head; node != NULL; node = node -> next)
 			node -> info.print();
 	}
@@ -161,7 +168,7 @@ struct CongNhanList {
 	 * @throw	CongNhanList::NotFound
 	 */
 	CongNhan getCongNhan(int maCN) {
-		Node *node;
+		Node* node;
 
 		for (node = list.head; node != NULL; node = node -> next)
 			if (node -> info.maCN == maCN)

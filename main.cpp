@@ -26,12 +26,22 @@ using namespace std;
 
 int main() {
 	CongNhanList congNhanList;
+	SanPhamList sanPhamList;
 	BangLuong bangLuong;
 
 	congNhanList.load();
 	congNhanList.print();
 
+	SanPham sanPham;
+	sanPham.input();
+	sanPhamList.insert(sanPham);
+	sanPhamList.save();
+
+	// sanPhamList.load();
+	// sanPhamList.print();
+
 	bangLuong.setCongNhanList(&congNhanList);
+	bangLuong.setSanPhamList(&sanPhamList);
 	bangLuong.show();
 
 	return 0;

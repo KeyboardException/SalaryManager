@@ -181,10 +181,10 @@ struct BangLuong {
 			return;
 		}
 
-		// if (sanPhamList == NULL) {
-		// 	cout << "ERROR BangLuong::show(): set SanPham list first :bruh:" << endl;
-		// 	return;
-		// }
+		if (sanPhamList == NULL) {
+			cout << "ERROR BangLuong::show(): set SanPham list first :bruh:" << endl;
+			return;
+		}
 
 		if (!initialized) {
 			cout << endl;
@@ -202,7 +202,7 @@ struct BangLuong {
 				 << "   4. Xóa Sản Phẩm              5. Xóa Bảng Lương" << endl
 				 << "   6. Quay Lại" << endl;
 
-			cout << endl << "> ";
+			cout << endl << " > ";
 			cin >> command;
 
 			switch (command) {
@@ -240,8 +240,8 @@ struct BangLuong {
 
 	private:
 		bool initialized = false;
-		CongNhanList *congNhanList = NULL;
-		SanPhamList *sanPhamList = NULL;
+		CongNhanList* congNhanList = NULL;
+		SanPhamList* sanPhamList = NULL;
 
 		void inputMaCN(string prompt) {
 			while (true) {
@@ -263,13 +263,13 @@ struct BangLuong {
 struct BangLuongList {
 	struct Node {
 		BangLuong info;
-		Node *next;
-		Node *prev;
+		Node* next;
+		Node* prev;
 	};
 
 	struct List {
-		Node *head;
-		Node *tail;
+		Node* head;
+		Node* tail;
 	};
 
 	List list;
@@ -277,8 +277,8 @@ struct BangLuongList {
 
 	void save() {
 		cout << "Đang lưu " << file << "..." << endl;
-		Node *node = list.head;
-		FILE *fileHandler = fopen(file, "wb");
+		Node* node = list.head;
+		FILE* fileHandler = fopen(file, "wb");
 
 		while (node) {
 			fwrite(&node -> info, sizeof(BangLuong), 1, fileHandler);
@@ -291,7 +291,7 @@ struct BangLuongList {
 	void load() {
 		cout << "Đang đọc " << file << "..." << endl;
 		list = *new List;
-		FILE *fileHandler = fopen(file, "rb");
+		FILE* fileHandler = fopen(file, "rb");
 
 		do {
 			BangLuong bangLuong;
@@ -307,7 +307,7 @@ struct BangLuongList {
 	 * @param	bangLuong	Bảng lương cần chèn
 	 */
 	void push(BangLuong bangLuong) {
-		Node *node;
+		Node* node;
 		node -> info = bangLuong;
 
 		if (list.head == NULL) {
