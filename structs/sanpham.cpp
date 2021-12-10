@@ -79,11 +79,20 @@ struct SanPhamList {
 		tree = NULL;
 		FILE* fileHandler = fopen(file, "rb");
 
-		do {
+		if (fileHandler == NULL) {
+			cout << "LỖI: File " << file << " không tồn tại! Dừng việc đọc file." << endl;
+			return;
+		}
+
+		while (true) {
 			SanPham sanPham;
 			fread(&sanPham, sizeof(SanPham), 1, fileHandler);
+
+			if (feof(fileHandler))
+				break;
+
 			insert(sanPham);
-		} while (!feof(fileHandler));
+		}
 
 		fclose(fileHandler);
 	}
@@ -95,6 +104,45 @@ struct SanPhamList {
 	void print() {
 		cout << "       Mã SP                      Tên SP             Đơn Giá" << endl;
 		__printLNR(tree);
+	}
+
+	int size() {
+		return __size(tree);
+	}
+
+	void show() {
+		int cmd;
+		while (true) {
+			cout << "" << endl;
+			cout << " 1) Thêm Sản Phẩm" << endl;
+			cout << " 2) Hiện Danh Sách Sản Phẩm" << endl;
+			cout << " 3) Xóa Sản Phẩm" << endl;
+			cout << " 4) Quay Lại" << endl;
+
+			cout << endl << " > ";
+			cin >> cmd;
+
+			switch (cmd) {
+				case 1: {
+					SanPham newSanPham;
+					newSanPham.input();
+					insert(newSanPham);
+					save();
+					break;
+				}
+
+				case 2: {
+					print();
+					break;
+				}
+
+				case 3:
+					break;
+
+				case 4:
+					return;
+			}
+		}
 	}
 
 	class NotFound : public exception {
@@ -165,5 +213,12 @@ struct SanPhamList {
 			__saveLNR(root -> left, fh);
 			fwrite(&root -> info, sizeof(SanPham), 1, fh);
 			__saveLNR(root -> right, fh);
+		}
+
+		int __size(Node* root) {
+			if (root == NULL)
+				return 0;
+
+			return 1 + __size(root -> left) + __size(root -> right);
 		}
 };

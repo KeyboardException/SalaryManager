@@ -2,7 +2,7 @@
  * CÔNG NHÂN
  * 
  * File này chứa khai báo cấu trúc của đối tượng Công Nhân và
- * Danh Sách Công Nhân. Danh sách sử dụng liên kết đôi.
+ * Danh Sách Công Nhân. Danh sách sử dụng liên kết đơn.
  * 
  * @author	Belikhun
  * @version	1.0
@@ -24,9 +24,12 @@ struct CongNhan {
 	char SDT[14];
 	NgayThang ngaySinh;
 
-	void input() {
-		cout << " + Mã Công Nhân          : ";
-		cin >> maCN;
+	void input(int newMaCN = -1) {
+		if (maCN < 0) {
+			cout << " + Mã Công Nhân          : ";
+			cin >> maCN;
+		} else
+			maCN = newMaCN;
 
 		cout << " + Họ Tên Công Nhân      : ";
 		getl(hoTen);
@@ -91,11 +94,20 @@ struct CongNhanList {
 		list = *new List;
 		FILE* fileHandler = fopen(file, "rb");
 
-		do {
+		if (fileHandler == NULL) {
+			cout << "LỖI: File " << file << " không tồn tại! Dừng việc đọc file." << endl;
+			return;
+		}
+
+		while (true) {
 			CongNhan congNhan;
 			fread(&congNhan, sizeof(CongNhan), 1, fileHandler);
+
+			if (feof(fileHandler))
+				break;
+
 			push(congNhan);
-		} while (!feof(fileHandler));
+		}
 
 		fclose(fileHandler);
 	}
@@ -144,12 +156,61 @@ struct CongNhanList {
 		return NULL;
 	}
 
+	int size() {
+		int size = 0;
+
+		Node* node;
+		for (node = list.head; node != NULL; node = node -> next)
+			size += 1;
+
+		return size;
+	}
+
 	void print() {
 		cout << "   Mã CN            Họ Tên        Quê Quán           SDT   Ngày Sinh" << endl;
 
 		Node* node;
 		for (node = list.head; node != NULL; node = node -> next)
 			node -> info.print();
+	}
+
+	void show() {
+		int cmd;
+		while (true) {
+			cout << "" << endl;
+			cout << " 1) Thêm Công Nhân" << endl;
+			cout << " 2) Hiện Danh Sách Công Nhân" << endl;
+			cout << " 3) Xóa Công Nhân" << endl;
+			cout << " 4) Quay Lại" << endl;
+
+			cout << endl << " > ";
+			cin >> cmd;
+
+			switch (cmd) {
+				case 1: {
+					int newMaCongNhan = size() + 1;
+
+					CongNhan newCongNhan;
+					newCongNhan.input(newMaCongNhan);
+					push(newCongNhan);
+					save();
+					break;
+				}
+
+				case 2: {
+					print();
+					break;
+				}
+
+				case 3: {
+					
+					break;
+				}
+
+				case 4:
+					return;
+			}
+		}
 	}
 
 	class NotFound : public exception {

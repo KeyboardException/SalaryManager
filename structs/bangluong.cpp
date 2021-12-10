@@ -24,6 +24,11 @@ struct BangLuong {
 		float thanhTien;
 
 		void input(SanPhamList* sanPhamList) {
+			if (sanPhamList == NULL) {
+				cout << "WARN BangLuong::SanPhamBangLuong::input(): sanPhamList is NULL! Please set it first before calling this function." << endl;
+				return;
+			}
+
 			SanPham sp;
 			while (true) {
 				cout << " + Nhập Mã Sản Phẩm: ";
@@ -67,7 +72,16 @@ struct BangLuong {
 	}
 
 	CongNhan getCongNhan() {
+		if (congNhanList == NULL) {
+			cout << "ERROR BangLuongList::createBangLuong(): congNhanList is NULL! Please set it first before calling this function." << endl;
+			exit(1);
+		}
+
 		return congNhanList -> getCongNhan(maCN);
+	}
+
+	void thangNamString(char thangNam[8]) {
+		sprintf(thangNam, "%02d/%04d", thang, nam);
 	}
 
 	void print() {
@@ -105,7 +119,7 @@ struct BangLuong {
 
 		// First Line
 		char thangNam[8];
-		sprintf(thangNam, "%02d/%04d", thang, nam);
+		thangNamString(thangNam);
 		cout << "   |  Mã Bảng Lương:     "
 			 << left << setw(40) << maBL
 			 << right << setw(12) << thangNam
@@ -165,10 +179,26 @@ struct BangLuong {
 		cout << "   |***************************************************************************|" << endl;
 	}
 
-	void input() {
+	void printRow() {
+		CongNhan congNhan = getCongNhan();
+
+		char thangNam[8];
+		thangNamString(thangNam);
+
+		cout << setw(8) << maBL
+			 << setw(16) << thangNam
+			 << setw(28) << congNhan.hoTen
+			 << setw(16) << luong()
+			 << endl;
+	}
+
+	void input(int newMaBL = -1) {
 		if (!initialized) {
-			cout << " + Mã Bảng Lương  : ";
-			cin >> maBL;
+			if (newMaBL < 0) {
+				cout << " + Mã Bảng Lương  : ";
+				cin >> maBL;
+			} else
+				maBL = newMaBL;
 
 			cout << " + Tháng          : ";
 			cin >> thang;
@@ -178,9 +208,6 @@ struct BangLuong {
 
 			inputMaCN(" + Mã Công Nhân   ");
 		} else {
-			cout << " + Mã Bảng Lương (" << setw(2) << maBL << ")       : ";
-			cin >> maBL;
-
 			cout << " + Tháng (" << setw(2) << thang << ")          : ";
 			cin >> thang;
 
@@ -191,6 +218,8 @@ struct BangLuong {
 			msg << " + Mã Công Nhân (" << setw(2) << maCN << ") ";
 			inputMaCN(msg.str());
 		}
+
+		initialized = true;
 	}
 
 	void show() {
@@ -218,7 +247,7 @@ struct BangLuong {
 			cout << "   1. Chỉnh Sửa Thông Tin" << endl
 				 << "   2. Thêm Sản Phẩm             3. Chỉnh Sửa Sản Phẩm" << endl
 				 << "   4. Xóa Sản Phẩm              5. Xóa Bảng Lương" << endl
-				 << "   6. Quay Lại" << endl;
+				 << "   6. Quay Lại (Lưu Thay Đổi)" << endl;
 
 			cout << endl << " > ";
 			cin >> command;
@@ -288,13 +317,13 @@ struct BangLuong {
 struct BangLuongList {
 	struct Node {
 		BangLuong info;
-		Node* next;
-		Node* prev;
+		Node* next = NULL;
+		Node* prev = NULL;
 	};
 
 	struct List {
-		Node* head;
-		Node* tail;
+		Node* head = NULL;
+		Node* tail = NULL;
 	};
 
 	List list;
@@ -314,17 +343,51 @@ struct BangLuongList {
 	}
 
 	void load() {
+		if (congNhanList == NULL) {
+			cout << "ERROR BangLuongList::load(): congNhanList is NULL! Please set it first before calling this function." << endl;
+			exit(1);
+		}
+
+		if (sanPhamList == NULL) {
+			cout << "ERROR BangLuongList::load(): sanPhamList is NULL! Please set it first before calling this function." << endl;
+			exit(1);
+		}
+
 		cout << "Đang đọc " << file << "..." << endl;
 		list = *new List;
 		FILE* fileHandler = fopen(file, "rb");
 
-		do {
+		if (fileHandler == NULL) {
+			cout << "LỖI: File " << file << " không tồn tại! Dừng việc đọc file." << endl;
+			return;
+		}
+
+		while (true) {
 			BangLuong bangLuong;
 			fread(&bangLuong, sizeof(BangLuong), 1, fileHandler);
+
+			if (feof(fileHandler))
+				break;
+
+			bangLuong.setCongNhanList(congNhanList);
+			bangLuong.setSanPhamList(sanPhamList);
 			push(bangLuong);
-		} while(!feof(fileHandler));
+		}
 
 		fclose(fileHandler);
+	}
+
+	int size() {
+		int size = 0;
+
+		if (list.head == NULL)
+			return 0;
+
+		Node* node;
+		for (node = list.head; node != NULL; node = node -> next)
+			size += 1;
+
+		return size;
 	}
 
 	/**
@@ -332,7 +395,7 @@ struct BangLuongList {
 	 * @param	bangLuong	Bảng lương cần chèn
 	 */
 	void push(BangLuong bangLuong) {
-		Node* node;
+		Node* node = new Node;
 		node -> info = bangLuong;
 
 		if (list.head == NULL) {
@@ -346,4 +409,167 @@ struct BangLuongList {
 			list.tail = node;
 		}
 	}
+
+	void print() {
+		cout << "   Mã BL       Tháng/Năm                   Công Nhân           Lương" << endl;
+
+		BangLuong bangLuong;
+		Node* node;
+
+		for (node = list.head; node != NULL; node = node -> next) {
+			bangLuong = node -> info;
+			bangLuong.printRow();
+		}
+	}
+
+	BangLuong createBangLuong() {
+		if (congNhanList == NULL) {
+			cout << "ERROR BangLuongList::createBangLuong(): congNhanList is NULL! Please set it first before calling this function." << endl;
+			exit(1);
+		}
+
+		if (sanPhamList == NULL) {
+			cout << "ERROR BangLuongList::createBangLuong(): sanPhamList is NULL! Please set it first before calling this function." << endl;
+			exit(1);
+		}
+
+		BangLuong bangLuong;
+		bangLuong.setCongNhanList(congNhanList);
+		bangLuong.setSanPhamList(sanPhamList);
+
+		return bangLuong;
+	}
+
+	class NotFound : public exception {
+		public:
+			const char* what() const throw () {
+				return "Bảng Lương không tồn tại!";
+			}
+	};
+
+	BangLuong* getBangLuong(int maBL) {
+		Node* node;
+
+		for (node = list.head; node != NULL; node = node -> next)
+			if (node -> info.maCN == maBL)
+				return &node -> info;
+
+		throw NotFound();
+	}
+
+	void setCongNhanList(CongNhanList *list) {
+		congNhanList = list;
+	}
+
+	void setSanPhamList(SanPhamList *list) {
+		sanPhamList = list;
+	}
+
+	void show() {
+		if (congNhanList == NULL) {
+			cout << "WARN BangLuongList::show(): set CongNhan list first :bruh:" << endl;
+			return;
+		}
+
+		if (sanPhamList == NULL) {
+			cout << "WARN BangLuongList::show(): set SanPham list first :bruh:" << endl;
+			return;
+		}
+
+		int cmd;
+		while (true) {
+			cout << "" << endl;
+			cout << " 1) Tạo Bảng Lương" << endl;
+			cout << " 2) Hiện Danh Sách Bảng Lương" << endl;
+			cout << " 3) Chỉnh Sửa Bảng Lương" << endl;
+			cout << " 4) Xóa Bảng Lương" << endl;
+			cout << " 5) Tổng Tiền Tất Cả Bảng Lương Theo Tháng" << endl;
+			cout << " 6) Tổng Tiền Tất Cả Bảng Lương Theo Năm" << endl;
+			cout << " 0) Quay Lại" << endl;
+
+			cout << endl << " > ";
+			cin >> cmd;
+
+			switch (cmd) {
+				case 1: {
+					int newMaBL = size() + 1;
+
+					BangLuong newBangLuong = createBangLuong();
+					newBangLuong.input(newMaBL);
+					newBangLuong.print();
+					push(newBangLuong);
+					save();
+					break;
+				}
+
+				case 2: {
+					print();
+					break;
+				}
+
+				case 3: {
+					int maBL;
+					BangLuong* bangLuong;
+
+					while (true) {
+						cout << "Mã Bảng Lương Cần Sửa: ";
+						cin >> maBL;
+
+						try {
+							bangLuong = getBangLuong(maBL);
+							break;
+						} catch (BangLuongList::NotFound error) {
+							cout << "EXCP BangLuongList::show(): " << error.what() << endl;
+						}
+					}
+
+					bangLuong -> show();
+					save();
+					break;
+				}
+
+				case 4:
+					break;
+
+				case 5: {
+					float tong = .0f;
+					int thang;
+
+					cout << "Nhập tháng cần tính: ";
+					cin >> thang;
+
+					Node* node;
+					for (node = list.head; node != NULL; node = node -> next)
+						if (node -> info.thang == thang)
+							tong += node -> info.luong();
+
+					cout << "Tổng lương trong tháng " << thang << ": " << tong << endl;
+					break;
+				}
+
+				case 6: {
+					float tong = .0f;
+					int nam;
+
+					cout << "Nhập năm cần tính: ";
+					cin >> nam;
+
+					Node* node;
+					for (node = list.head; node != NULL; node = node -> next)
+						if (node -> info.nam == nam)
+							tong += node -> info.luong();
+
+					cout << "Tổng lương trong năm " << nam << ": " << tong << endl;
+					break;
+				}
+
+				case 0:
+					return;
+			}
+		}
+	}
+
+	private:
+		CongNhanList* congNhanList = NULL;
+		SanPhamList* sanPhamList = NULL;
 };

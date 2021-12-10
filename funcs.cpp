@@ -12,6 +12,8 @@
 using namespace std;
 
 void getl(char value[]) {
-	cin.ignore(0);
-	gets(value);
+	cin.clear();
+	cin.ignore(1000, '\n');
+	cin >> value;
+	// cin.getline(value, 1000, '\n');
 }
