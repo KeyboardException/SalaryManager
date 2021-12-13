@@ -10,7 +10,6 @@
 #pragma once
 #include <iostream>
 #include <iomanip>
-#include <filesystem>
 #include <funcs.cpp>
 #include <congnhan.cpp>
 #include <sanpham.cpp>

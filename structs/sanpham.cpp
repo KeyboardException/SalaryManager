@@ -12,7 +12,6 @@
 #include <iostream>
 #include <cstring>
 #include <iomanip>
-#include <filesystem>
 #include <funcs.cpp>
 
 using namespace std;

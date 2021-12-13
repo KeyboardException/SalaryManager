@@ -11,7 +11,6 @@
 #pragma once
 #include <iostream>
 #include <iomanip>
-#include <filesystem>
 #include <ngaythang.cpp>
 #include <funcs.cpp>
 
