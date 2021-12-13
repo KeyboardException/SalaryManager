@@ -47,7 +47,7 @@ int main() {
 		cout << " 1) Quản lí danh sách công nhân" << endl;
 		cout << " 2) Quản lí danh sách sản phẩm" << endl;
 		cout << " 3) Quản lí bảng lương" << endl;
-		cout << " 4) Thoát" << endl;
+		cout << " 0) Thoát" << endl;
 
 		cout << endl << " > ";
 		cin >> cmd;
@@ -67,7 +67,8 @@ int main() {
 				bangLuongList.show();
 				break;
 
-			case 4:
+			case 0:
+			default:
 				return 0;
 		}
 	}

@@ -17,9 +17,9 @@
 using namespace std;
 
 struct NgayThang {
-	int ngay;
-	int thang;
-	int nam;
+	int ngay = 0;
+	int thang = 0;
+	int nam = 0;
 
 	void input(string prompt = "Ngay Thang") {
 		int s = 0;

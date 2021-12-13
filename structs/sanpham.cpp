@@ -17,13 +17,13 @@
 using namespace std;
 
 struct SanPham {
-	char maSP[12];
-	char tenSP[50];
-	float donGia;
+	char maSP[12] = "UN00000000";
+	char tenSP[50] = "EMPTY";
+	float donGia = -1.0f;
 
 	void print() {
 		cout << setw(12) << maSP
-			 << setw(28) << tenSP
+			 << setw(44) << tenSP
 			 << setw(20) << donGia
 			 << endl;
 	}
@@ -97,12 +97,38 @@ struct SanPhamList {
 	}
 
 	/**
+	 * @brief
+	 * Xóa Sản Phẩm với mã Sản Phẩm đưa vào. khỏi danh sách, sau đó
+	 * lưu thay đổi vào tệp.
+	 * 
+	 * @param	maSP
+	 * 
+	 * @return
+	 * true nếu tìm thấy và xóa thành công,
+	 * ngược lại trả về false
+	 */
+	bool remove(char* maSP) {
+		bool found = false;
+		tree = __remove(tree, maSP, found);
+
+		if (found)
+			save();
+
+		return found;
+	}
+
+	/**
 	 * In ra bảng danh sách Sản Phẩm
 	 * Cây sẽ duyệt theo thứ tự L -> N -> R
 	 */
 	void print() {
-		cout << "       Mã SP                      Tên SP             Đơn Giá" << endl;
-		__printLNR(tree);
+		bool found = false;
+
+		listHeader();
+		__printLNR(tree, found);
+
+		if (!found)
+			cout << endl << "                          >> TRỐNG <<" << endl << endl;
 	}
 
 	int size() {
@@ -116,7 +142,8 @@ struct SanPhamList {
 			cout << " 1) Thêm Sản Phẩm" << endl;
 			cout << " 2) Hiện Danh Sách Sản Phẩm" << endl;
 			cout << " 3) Xóa Sản Phẩm" << endl;
-			cout << " 4) Quay Lại" << endl;
+			cout << " 4) Tìm Kiếm Sản Phẩm" << endl;
+			cout << " 0) Quay Lại" << endl;
 
 			cout << endl << " > ";
 			cin >> cmd;
@@ -136,9 +163,37 @@ struct SanPhamList {
 				}
 
 				case 3:
+					char maSP[50];
+
+					while (true) {
+						cout << "Nhập mã Sản Phẩm (-1 để hủy): ";
+						cin >> maSP;
+
+						if (strcmp(maSP, "-1") == 0 || remove(maSP))
+							break;
+						
+						cout << "Không tìm thấy Sản Phẩm với mã " << maSP << endl;
+					}
+
 					break;
 
-				case 4:
+				case 4: {
+					char search[30];
+					bool found = false;
+
+					cout << "Nhập chuỗi tìm kiếm: ";
+					getl(search);
+
+					listHeader();
+					__searchLNR(tree, search, found);
+					
+					if (!found)
+						cout << endl << "                          >> TRỐNG <<" << endl << endl;
+
+					break;
+				}
+
+				case 0:
 					return;
 			}
 		}
@@ -152,18 +207,40 @@ struct SanPhamList {
 	};
 
 	/**
-	 * Lấy thông tin Sản Phẩm dựa trên mã Sản Phẩm,
-	 * throw exception khi không tìm thấy sản phẩm trong
+	 * @brief
+	 * Lấy thông tin Sản Phẩm dựa trên mã Sản Phẩm, 
+	 * throw SanPhamList::NotFound khi không tìm thấy sản phẩm trong
 	 * danh sách.
 	 * 
+	 * @throws	SanPhamList::NotFound
 	 * @return	SanPham
-	 * @throw	SanPhamList::NotFound
 	 */
 	SanPham getSanPham(char maSP[8]) {
 		return __get(maSP, tree);
 	}
 
+	/**
+	 * @brief
+	 * Lấy thông tin Sản Phẩm dựa trên mã Sản Phẩm. 
+	 * Trả về Sản Phẩm mặc định khi không tìm thấy sản phẩm trong
+	 * danh sách.
+	 * 
+	 * @return	SanPham
+	 */
+	SanPham getSanPhamSafe(char maSP[8]) {
+		try {
+			return __get(maSP, tree);
+		} catch(NotFound e) {
+			SanPham newSanPhamThatIsVerySafeToYourRam;
+			return newSanPhamThatIsVerySafeToYourRam;
+		}
+	}
+
 	private:
+		void listHeader() {
+			cout << "       Mã SP                                      Tên SP             Đơn Giá" << endl;
+		}
+
 		void __insert(SanPham info, Node* &root) {
 			if (root != NULL) {
 				int cmp = strcmp(info.maSP, root -> info.maSP);
@@ -196,13 +273,34 @@ struct SanPhamList {
 				return __get(maSP, root -> right);
 		}
 
-		void __printLNR(Node* root) {
+		void __printLNR(Node* root, bool &found) {
 			if (root == NULL)
 				return;
 
-			__printLNR(root -> left);
+			__printLNR(root -> left, found);
+
+			found = true;
 			root -> info.print();
-			__printLNR(root -> right);
+
+			__printLNR(root -> right, found);
+		}
+
+		void __searchLNR(Node* root, char* search, bool &found) {
+			if (root == NULL)
+				return;
+
+			__searchLNR(root -> left, search, found);
+
+			// Process
+			char tenSP[50];
+			strcpy(tenSP, root -> info.tenSP);
+
+			if (strstr(strlwr(tenSP), strlwr(search)) != NULL) {
+				root -> info.print();
+				found = true;
+			}
+
+			__searchLNR(root -> right, search, found);
 		}
 
 		void __saveLNR(Node* root, FILE* fh) {
@@ -219,5 +317,55 @@ struct SanPhamList {
 				return 0;
 
 			return 1 + __size(root -> left) + __size(root -> right);
+		}
+
+		Node* __remove(Node* root, char* maSP, bool &found) {
+			if (root == NULL)
+				return root;
+
+			// Recursive calls for ancestors of
+			// node to be deleted
+			int cmp = strcmp(maSP, root -> info.maSP);
+
+			if (cmp < 0) {
+				root -> left = __remove(root -> left, maSP, found);
+				return root;
+			} else if (cmp > 0) {
+				root -> right = __remove(root -> right, maSP, found);
+				return root;
+			}
+
+			// We reach here when root is the node
+    		// to be deleted.
+			found = true;
+			cout << "Đã xóa Sản Phẩm [" << root -> info.maSP << "] " << root -> info.tenSP << endl;
+
+			if (root -> left == NULL) {
+				Node *temp = root -> right;
+				delete root;
+				return temp;
+			} else if (root -> right == NULL) {
+				Node *temp = root -> left;
+				delete root;
+				return temp;
+			} else {
+				Node *succParent = root;
+				Node *succ = root -> right;
+
+				while (succ -> left != NULL) {
+					succParent = succ;
+					succ = succ->left;
+				}
+
+				if (succParent != root)
+					succParent -> left = succ -> right;
+				else
+					succParent -> right = succ -> right;
+
+				root -> info = succ -> info;
+
+				delete succ;
+				return root;
+			}
 		}
 };

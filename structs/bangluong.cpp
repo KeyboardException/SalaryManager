@@ -14,7 +14,10 @@
 #include <congnhan.cpp>
 #include <sanpham.cpp>
 
-const float THUE = 0.03f;
+const float LUONG_CUNG = 5500000.0f;
+const float THUE = 0.01f;
+
+struct BangLuongList;
 
 struct BangLuong {
 	struct SanPhamBangLuong {
@@ -55,6 +58,7 @@ struct BangLuong {
 	int maCN;
 	SanPhamBangLuong sanPham[50];
 	int soLuong = 0;
+	float luongCung = LUONG_CUNG;
 	float thue = THUE;
 	float tongTien = .0f;
 	
@@ -67,9 +71,16 @@ struct BangLuong {
 	}
 
 	float luong() {
-		return tongTien * (1 - thue);
+		return (tongTien + luongCung) * (1 - thue);
 	}
 
+	/**
+	 * @brief Lấy công nhân với mã công nhân đưa vào, throw lỗi khi không
+	 * tìm thấy Công Nhân.
+	 * 
+	 * @throws CongNhanList::NotFound
+	 * @return CongNhan
+	 */
 	CongNhan getCongNhan() {
 		if (congNhanList == NULL) {
 			cout << "ERROR BangLuongList::createBangLuong(): congNhanList is NULL! Please set it first before calling this function." << endl;
@@ -77,6 +88,29 @@ struct BangLuong {
 		}
 
 		return congNhanList -> getCongNhan(maCN);
+	}
+
+	/**
+	 * @brief Lấy công nhân với mã công nhân đưa vào, trả về đối tượng
+	 * Công Nhân mặc định nếu không tìm thấy.
+	 * 
+	 * @return CongNhan
+	 */
+	CongNhan getCongNhanSafe() {
+		if (congNhanList == NULL) {
+			cout << "ERROR BangLuongList::createBangLuong(): congNhanList is NULL! Please set it first before calling this function." << endl;
+			exit(1);
+		}
+
+		CongNhan congNhan;
+
+		try {
+			congNhan = congNhanList -> getCongNhan(maCN);
+		} catch(CongNhanList::NotFound e) {
+			// No further action needed.
+		}
+
+		return congNhan;
 	}
 
 	void thangNamString(char thangNam[8]) {
@@ -111,10 +145,10 @@ struct BangLuong {
 		// 
 		//   >
 
-		CongNhan congNhan = getCongNhan();
+		CongNhan congNhan = getCongNhanSafe();
 
 		// Header
-		cout << "   |******************************** BẢNG LƯƠNG *******************************|" << endl;
+		cout << endl << "   |******************************** BẢNG LƯƠNG *******************************|" << endl;
 
 		// First Line
 		char thangNam[8];
@@ -141,11 +175,15 @@ struct BangLuong {
 			SanPham sp;
 
 			for (int i = 0; i < soLuong; i++) {
-				sp = sanPhamList -> getSanPham(sanPham[i].maSP);
+				try {
+					sp = sanPhamList -> getSanPham(sanPham[i].maSP);
+				} catch(SanPhamList::NotFound e) {
+					sp = *new SanPham;
+				}
 
 				cout << "   |  "
 					<< right << setw(3) << i + 1 << "   "
-					<< left << setw(33) << sp.tenSP
+					<< left << setw(33) << truncate(sp.tenSP, 32)
 					<< right << setw(2) << sanPham[i].soLuong << " "
 					<< right << setw(10) << sp.donGia
 					<< right << setw(19) << sanPham[i].thanhTien
@@ -154,7 +192,7 @@ struct BangLuong {
 				tongTien += sanPham[i].thanhTien;
 			}
 
-			free(&sp);
+			delete &sp;
 		} else {
 			cout << "   |                                                                           |" << endl
 				 << "   |                              >>> TRỐNG! <<<                               |" << endl
@@ -162,32 +200,39 @@ struct BangLuong {
 		}
 
 		// Totals
+		cout.precision(0);
+
 		cout << "   |                                                       ------------------  |" << endl;
 		cout << "   |                                                       TỔNG:"
-			 << right << setw(13) << tongTien
+			 << right << setw(13) << fixed << tongTien
 			 << "  |" << endl;
 
-		cout << "   |                                                       THUẾ (3%):"
-			 << right << setw(8) << tongTien * thue
+		cout << "   |                                                 LƯƠNG CỨNG:"
+			 << right << setw(13) << fixed << luongCung
+			 << "  |" << endl;
+
+		cout << "   |                                                       THUẾ (" << thue * 100 << "%):"
+			 << right << setw(8) << fixed << (tongTien + luongCung) * thue
 			 << "  |" << endl;
 
 		cout << "   |                                                      LƯƠNG:"
-			 << right << setw(13) << luong()
+			 << right << setw(13) << fixed << luong()
 			 << "  |" << endl;
 
 		cout << "   |***************************************************************************|" << endl;
 	}
 
 	void printRow() {
-		CongNhan congNhan = getCongNhan();
+		CongNhan congNhan = getCongNhanSafe();
 
 		char thangNam[8];
 		thangNamString(thangNam);
 
+		cout.precision(0);
 		cout << setw(8) << maBL
 			 << setw(16) << thangNam
 			 << setw(28) << congNhan.hoTen
-			 << setw(16) << luong()
+			 << setw(16) << fixed << luong()
 			 << endl;
 	}
 
@@ -221,15 +266,15 @@ struct BangLuong {
 		initialized = true;
 	}
 
-	void show() {
+	int show(bool isRemoveAvailable = false) {
 		if (congNhanList == NULL) {
-			cout << "ERROR BangLuong::show(): set CongNhan list first :bruh:" << endl;
-			return;
+			cout << "WARN BangLuong::show(): set CongNhan list first :bruh:" << endl;
+			return 0;
 		}
 
 		if (sanPhamList == NULL) {
-			cout << "ERROR BangLuong::show(): set SanPham list first :bruh:" << endl;
-			return;
+			cout << "WARN BangLuong::show(): set SanPham list first :bruh:" << endl;
+			return 0;
 		}
 
 		if (!initialized) {
@@ -245,8 +290,13 @@ struct BangLuong {
 			cout << endl;
 			cout << "   1. Chỉnh Sửa Thông Tin" << endl
 				 << "   2. Thêm Sản Phẩm             3. Chỉnh Sửa Sản Phẩm" << endl
-				 << "   4. Xóa Sản Phẩm              5. Xóa Bảng Lương" << endl
-				 << "   6. Quay Lại (Lưu Thay Đổi)" << endl;
+				 << "   4. Xóa Sản Phẩm";
+
+			if (isRemoveAvailable)
+				cout << "              5. Xóa Bảng Lương";
+
+			cout << endl
+				 << "   0. Quay Lại (Lưu Thay Đổi)" << endl;
 
 			cout << endl << " > ";
 			cin >> command;
@@ -268,17 +318,60 @@ struct BangLuong {
 					sanPham[soLuong++] = spbl;
 					break;
 				
-				case 3:
+				case 3: {
+					int stt;
+
+					while (true) {
+						cout << "Nhập STT (-1 để hủy): ";
+						cin >> stt;
+
+						if (stt < 1 || stt > soLuong) {
+							cout << "STT bạn vừa nhập không hợp lệ!" << endl;
+							continue;
+						}
+
+						sanPham[stt - 1].input(sanPhamList);
+						break;	
+					}
+
 					break;
+				}
 				
-				case 4:
+				case 4: {
+					int stt;
+
+					while (true) {
+						cout << "Nhập STT (-1 để hủy): ";
+						cin >> stt;
+
+						if (stt < 1 || stt > soLuong) {
+							cout << "STT bạn vừa nhập không hợp lệ!" << endl;
+							continue;
+						}
+
+						cout << "Đã xóa Sản Phẩm "
+							 << sanPhamList -> getSanPhamSafe(sanPham[stt - 1].maSP).tenSP
+							 << endl;
+
+						for (int i = stt - 1; i < soLuong; i++)
+							sanPham[i] = sanPham[i + 1];
+
+						soLuong--;
+						break;
+					}
+
 					break;
+				}
 				
-				case 5:
-					break;
+				case 5: {
+					if (!isRemoveAvailable)
+						continue;
+
+					return command;
+				}
 				
-				case 6:
-					return;
+				case 0:
+					return command;
 
 				default:
 					break;
@@ -409,6 +502,46 @@ struct BangLuongList {
 		}
 	}
 
+	/**
+	 * @brief
+	 * Xóa Bảng Lương với mã bảng lương đưa vào khỏi danh sách, 
+	 * sau đó lưu thay đổi vào tệp.
+	 * 
+	 * @param	maCN
+	 * 
+	 * @return
+	 * true nếu tìm thấy và xóa thành công,
+	 * ngược lại trả về false
+	 */
+	bool remove(int maBL) {
+		Node* node;
+
+		for (node = list.head; node != NULL; node = node -> next) {
+			if (node -> info.maBL == maBL) {
+				if ((node == list.head) && (node == list.tail)) {
+					list.head = NULL;
+					list.tail = NULL;
+				} else if (node == list.head)
+					list.head = node -> next;
+				else if (node == list.tail) {
+					node -> prev -> next = NULL;
+					list.tail = node -> prev;
+				} else {
+					node -> prev -> next = node -> next;
+					node -> next-> prev = node -> prev;
+				}
+
+				cout << "Đã xóa Bảng Lương [" << node -> info.maBL << "]" << endl;
+				delete node;
+
+				save();
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	void print() {
 		cout << "   Mã BL       Tháng/Năm                   Công Nhân           Lương" << endl;
 
@@ -450,7 +583,7 @@ struct BangLuongList {
 		Node* node;
 
 		for (node = list.head; node != NULL; node = node -> next)
-			if (node -> info.maCN == maBL)
+			if (node -> info.maBL == maBL)
 				return &node -> info;
 
 		throw NotFound();
@@ -480,10 +613,11 @@ struct BangLuongList {
 			cout << "" << endl;
 			cout << " 1) Tạo Bảng Lương" << endl;
 			cout << " 2) Hiện Danh Sách Bảng Lương" << endl;
-			cout << " 3) Chỉnh Sửa Bảng Lương" << endl;
-			cout << " 4) Xóa Bảng Lương" << endl;
-			cout << " 5) Tổng Tiền Tất Cả Bảng Lương Theo Tháng" << endl;
-			cout << " 6) Tổng Tiền Tất Cả Bảng Lương Theo Năm" << endl;
+			cout << " 3) Xem Bảng Lương" << endl;
+			cout << " 4) Chỉnh Sửa Bảng Lương" << endl;
+			cout << " 5) Xóa Bảng Lương" << endl;
+			cout << " 6) Tổng Tiền Tất Cả Bảng Lương Theo Tháng" << endl;
+			cout << " 7) Tổng Tiền Tất Cả Bảng Lương Theo Năm" << endl;
 			cout << " 0) Quay Lại" << endl;
 
 			cout << endl << " > ";
@@ -511,6 +645,27 @@ struct BangLuongList {
 					BangLuong* bangLuong;
 
 					while (true) {
+						cout << "Mã Bảng Lương Cần Xem: ";
+						cin >> maBL;
+
+						try {
+							bangLuong = getBangLuong(maBL);
+							break;
+						} catch (BangLuongList::NotFound error) {
+							cout << "EXCP BangLuongList::show(): " << error.what() << endl;
+						}
+					}
+
+					bangLuong -> print();
+					cout << endl;
+					break;
+				}
+
+				case 4: {
+					int maBL;
+					BangLuong* bangLuong;
+
+					while (true) {
 						cout << "Mã Bảng Lương Cần Sửa: ";
 						cin >> maBL;
 
@@ -522,15 +677,33 @@ struct BangLuongList {
 						}
 					}
 
-					bangLuong -> show();
-					save();
+					int command = bangLuong -> show(true);
+					if (command == 5)
+						remove(bangLuong -> maBL);
+					else
+						// Remove will call save() so we don't need to call it again.
+						save();
+					
 					break;
 				}
 
-				case 4:
-					break;
-
 				case 5: {
+					int maBL;
+
+					while (true) {
+						cout << "Nhập mã Bảng Lương (-1 để hủy): ";
+						cin >> maBL;
+
+						if (maBL == -1 || remove(maBL))
+							break;
+						
+						cout << "Không tìm thấy Bảng Lương với mã " << maBL << endl;
+					}
+
+					break;
+				}
+
+				case 6: {
 					float tong = .0f;
 					int thang;
 
@@ -546,7 +719,7 @@ struct BangLuongList {
 					break;
 				}
 
-				case 6: {
+				case 7: {
 					float tong = .0f;
 					int nam;
 

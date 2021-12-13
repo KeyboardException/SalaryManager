@@ -11,14 +11,15 @@
 #pragma once
 #include <iostream>
 #include <iomanip>
+#include <cstring>
 #include <ngaythang.cpp>
 #include <funcs.cpp>
 
 using namespace std;
 
 struct CongNhan {
-	int maCN;
-	char hoTen[30];
+	int maCN = -1;
+	char hoTen[30] = "EMPTY";
 	char queQuan[50];
 	char SDT[14];
 	NgayThang ngaySinh;
@@ -155,6 +156,41 @@ struct CongNhanList {
 		return NULL;
 	}
 
+	/**
+	 * @brief
+	 * Xóa Công Nhân với mã công nhân đưa vào khỏi danh sách, sau đó
+	 * lưu thay đổi vào tệp.
+	 * 
+	 * @param	maCN
+	 * 
+	 * @return
+	 * true nếu tìm thấy và xóa thành công,
+	 * ngược lại trả về false
+	 */
+	bool remove(int maCN) {
+		Node* node;
+		Node* prev = NULL;
+
+		for (node = list.head; node != NULL; node = node -> next) {
+			if (node -> info.maCN == maCN) {
+				if (prev == NULL)
+					list.head = node -> next;
+				else
+					prev -> next = node -> next;
+
+				cout << "Đã xóa Công Nhân [" << node -> info.maCN << "] " << node -> info.hoTen << endl;
+				delete node;
+
+				save();
+				return true;
+			}
+
+			prev = node;
+		}
+
+		return false;
+	}
+
 	int size() {
 		int size = 0;
 
@@ -166,7 +202,7 @@ struct CongNhanList {
 	}
 
 	void print() {
-		cout << "   Mã CN            Họ Tên        Quê Quán           SDT   Ngày Sinh" << endl;
+		listHeader();
 
 		Node* node;
 		for (node = list.head; node != NULL; node = node -> next)
@@ -180,17 +216,20 @@ struct CongNhanList {
 			cout << " 1) Thêm Công Nhân" << endl;
 			cout << " 2) Hiện Danh Sách Công Nhân" << endl;
 			cout << " 3) Xóa Công Nhân" << endl;
-			cout << " 4) Quay Lại" << endl;
+			cout << " 4) Tìm Kiếm Công Nhân" << endl;
+			cout << " 0) Quay Lại" << endl;
 
 			cout << endl << " > ";
 			cin >> cmd;
 
 			switch (cmd) {
 				case 1: {
-					int newMaCongNhan = size() + 1;
+					int newMaCN = 1;
+					if (list.tail != NULL)
+						newMaCN = list.tail -> info.maCN + 1;
 
 					CongNhan newCongNhan;
-					newCongNhan.input(newMaCongNhan);
+					newCongNhan.input(newMaCN);
 					push(newCongNhan);
 					save();
 					break;
@@ -202,11 +241,47 @@ struct CongNhanList {
 				}
 
 				case 3: {
-					
+					int maCN;
+
+					while (true) {
+						cout << "Nhập mã Công Nhân (-1 để hủy): ";
+						cin >> maCN;
+
+						if (maCN == -1 || remove(maCN))
+							break;
+						
+						cout << "Không tìm thấy Công Nhân với mã " << maCN << endl;
+					}
+
 					break;
 				}
 
-				case 4:
+				case 4: {
+					Node* node;
+					char search[30];
+					bool found = false;
+
+					cout << "Nhập chuỗi tìm kiếm: ";
+					getl(search);
+
+					listHeader();
+					for (node = list.head; node != NULL; node = node -> next) {
+						char hoTen[30];
+						strcpy(hoTen, node -> info.hoTen);
+
+						if (strstr(strlwr(hoTen), strlwr(search)) != NULL) {
+							node -> info.print();
+							found = true;
+						}
+					}
+
+					if (!found)
+						cout << endl << "                             >> TRỐNG <<" << endl << endl;
+
+					break;
+				}
+
+				case 0:
 					return;
 			}
 		}
@@ -220,12 +295,12 @@ struct CongNhanList {
 	};
 
 	/**
-	 * Lấy thông tin Công Nhân dựa trên mã Công Nhân,
+	 * @brief Lấy thông tin Công Nhân dựa trên mã Công Nhân,
 	 * throw exception khi không tìm thấy công nhân trong
 	 * danh sách.
 	 * 
+	 * @throws	CongNhanList::NotFound
 	 * @return	CongNhan
-	 * @throw	CongNhanList::NotFound
 	 */
 	CongNhan getCongNhan(int maCN) {
 		Node* node;
@@ -236,4 +311,9 @@ struct CongNhanList {
 
 		throw NotFound();
 	}
+
+	private:
+		void listHeader() {
+			cout << "   Mã CN            Họ Tên        Quê Quán           SDT   Ngày Sinh" << endl;
+		}
 };
