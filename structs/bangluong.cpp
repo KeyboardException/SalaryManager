@@ -572,6 +572,36 @@ struct BangLuongList {
 		return bangLuong;
 	}
 
+	
+	/**
+	 * Sắp xếp các bảng lương theo thứ tự tăng dần 
+	 * @author Birdchocolate said: hí ae :D
+	 */
+	void sort(bool x)
+	{
+		Node *nodeFirst, *nodeSecond;
+		for (nodeFirst = list.head; nodeFirst != NULL; nodeFirst = nodeFirst -> next)
+		{
+			for (nodeSecond = nodeFirst -> next; nodeSecond != NULL; nodeSecond = nodeSecond -> next)
+			{
+				if (x)
+				{
+					if (nodeFirst -> info.luong() > nodeSecond -> info.luong())
+					{
+						swap(nodeFirst -> info, nodeSecond -> info);
+					}
+				}
+				else
+				{
+					if (nodeFirst -> info.luong() < nodeSecond -> info.luong())
+					{
+						swap(nodeFirst -> info, nodeSecond -> info);
+					}
+				}
+			}
+		}
+	}
+
 	class NotFound : public exception {
 		public:
 			const char* what() const throw () {
@@ -618,6 +648,7 @@ struct BangLuongList {
 			cout << " 5) Xóa Bảng Lương" << endl;
 			cout << " 6) Tổng Tiền Tất Cả Bảng Lương Theo Tháng" << endl;
 			cout << " 7) Tổng Tiền Tất Cả Bảng Lương Theo Năm" << endl;
+			cout << " 8) Sắp xếp lương công nhân" << endl;
 			cout << " 0) Quay Lại" << endl;
 
 			cout << endl << " > ";
@@ -736,6 +767,19 @@ struct BangLuongList {
 						 << setprecision(0) << fixed << tong << endl;
 					
 					break;
+				}
+				
+				case 8:{
+					bool follow = false;
+					string cmd;
+					cout << "Nhập bất kì để sắp xếp giảm dần & 'up' để tăng dần: ";
+					cin >> cmd;
+					if(cmd == "up")
+					{
+						follow = true;
+					}
+					sort(follow);
+					print();
 				}
 
 				case 0:
