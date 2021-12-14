@@ -715,7 +715,8 @@ struct BangLuongList {
 						if (node -> info.thang == thang)
 							tong += node -> info.luong();
 
-					cout << "Tổng lương trong tháng " << thang << ": " << tong << endl;
+					cout << "Tổng lương trong tháng " << thang << ": "
+						 << setprecision(0) << fixed << tong << endl;
 					break;
 				}
 
@@ -731,7 +732,9 @@ struct BangLuongList {
 						if (node -> info.nam == nam)
 							tong += node -> info.luong();
 
-					cout << "Tổng lương trong năm " << nam << ": " << tong << endl;
+					cout << "Tổng lương trong năm " << nam << ": "
+						 << setprecision(0) << fixed << tong << endl;
+					
 					break;
 				}
 
