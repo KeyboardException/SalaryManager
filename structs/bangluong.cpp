@@ -197,7 +197,7 @@ struct BangLuong {
 					<< left << setw(33) << truncate(sp.tenSP, 32)
 					<< right << setw(2) << sanPham[i].soLuong << " "
 					<< right << setw(10) << sp.donGia
-					<< right << setw(19) << sanPham[i].thanhTien
+					<< right << setw(19) << setprecision(1) << fixed << sanPham[i].thanhTien
 					<< "  |" << endl;
 
 				tongTien += sanPham[i].thanhTien;
@@ -210,24 +210,22 @@ struct BangLuong {
 				 << "   |                                                                           |" << endl;
 		}
 
-		// Totals
-		cout.precision(0);
-
-		cout << "   |                                                       ------------------  |" << endl;
-		cout << "   |                                                       TỔNG:"
-			 << right << setw(13) << fixed << tongTien
+		cout << "   |                                                   ----------------------  |" << endl;
+		cout << "   |                                                   TỔNG:"
+			 << right << setw(17) << setprecision(1) << fixed << tongTien
 			 << "  |" << endl;
 
-		cout << "   |                                                 LƯƠNG CỨNG:"
-			 << right << setw(13) << fixed << luongCung
+		cout << "   |                                             LƯƠNG CỨNG:"
+			 << right << setw(17) << setprecision(1) << fixed << luongCung
 			 << "  |" << endl;
 
-		cout << "   |                                                       THUẾ (" << thue * 100 << "%):"
-			 << right << setw(8) << fixed << (tongTien + luongCung) * thue
+		cout << "   |                                              THUẾ ("
+			 << setprecision(0) << fixed << (thue * 100) << "%):"
+			 << right << setw(17) << setprecision(1) << fixed << (tongTien + luongCung) * thue
 			 << "  |" << endl;
 
-		cout << "   |                                                      LƯƠNG:"
-			 << right << setw(13) << fixed << luong()
+		cout << "   |                                                  LƯƠNG:"
+			 << right << setw(17) << setprecision(1) << fixed << luong()
 			 << "  |" << endl;
 
 		cout << "   |***************************************************************************|" << endl;
@@ -239,11 +237,10 @@ struct BangLuong {
 		char thangNam[8];
 		thangNamString(thangNam);
 
-		cout.precision(0);
 		cout << setw(8) << maBL
 			 << setw(16) << thangNam
 			 << setw(28) << congNhan.hoTen
-			 << setw(16) << fixed << luong()
+			 << setw(16) << setprecision(1) << fixed << luong()
 			 << endl;
 	}
 
@@ -301,10 +298,11 @@ struct BangLuong {
 			cout << endl;
 			cout << "   1. Chỉnh Sửa Thông Tin" << endl
 				 << "   2. Thêm Sản Phẩm             3. Chỉnh Sửa Sản Phẩm" << endl
-				 << "   4. Xóa Sản Phẩm";
+				 << "   4. Sửa Lương Cứng            5. Sửa % Thuế" << endl
+				 << "   6. Xóa Sản Phẩm";
 
 			if (isRemoveAvailable)
-				cout << "              5. Xóa Bảng Lương";
+				cout << "              7. Xóa Bảng Lương";
 
 			cout << endl
 				 << "   0. Quay Lại (Lưu Thay Đổi)" << endl;
@@ -347,8 +345,27 @@ struct BangLuong {
 
 					break;
 				}
-				
+
 				case 4: {
+					cout << "Lương Cứng Mới ("
+						 << setprecision(1) << fixed << luongCung
+						 << "): ";
+
+					cin >> luongCung;
+					break;
+				}
+
+				case 5: {
+					cout << "% Thuế Mới ("
+						 << setprecision(1) << fixed << thue * 100
+						 << "%): ";
+
+					cin >> thue;
+					thue /= 100.0f;
+					break;
+				}
+				
+				case 6: {
 					int stt;
 
 					while (true) {
@@ -374,7 +391,7 @@ struct BangLuong {
 					break;
 				}
 				
-				case 5: {
+				case 7: {
 					if (!isRemoveAvailable)
 						continue;
 
