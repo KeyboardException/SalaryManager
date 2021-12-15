@@ -24,7 +24,7 @@ struct SanPham {
 	void print() {
 		cout << setw(12) << maSP
 			 << setw(44) << tenSP
-			 << setw(20) << donGia
+			 << setw(20) << setprecision(1) << fixed << donGia
 			 << endl;
 	}
 
