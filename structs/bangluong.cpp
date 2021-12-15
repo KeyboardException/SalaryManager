@@ -25,16 +25,26 @@ struct BangLuong {
 		int soLuong;
 		float thanhTien;
 
-		void input(SanPhamList* sanPhamList) {
+		/**
+		 * @brief Nhập thông tin sản phẩm cho bảng lương
+		 * 
+		 * @param	sanPhamList 
+		 * @return	true	Nếu nhập thành công mà không có lỗi gì
+		 * @return	false	Nếu nhập bị lỗi hoặc người dùng hủy nhập
+		 */
+		bool input(SanPhamList* sanPhamList) {
 			if (sanPhamList == NULL) {
 				cout << "WARN BangLuong::SanPhamBangLuong::input(): sanPhamList is NULL! Please set it first before calling this function." << endl;
-				return;
+				return false;
 			}
 
 			SanPham sp;
 			while (true) {
-				cout << " + Nhập Mã Sản Phẩm: ";
+				cout << " + Nhập Mã Sản Phẩm (-1 để hủy): ";
 				getl(maSP);
+
+				if (strcmp(maSP, "-1") == 0)
+					return false;
 
 				try {
 					sp = sanPhamList -> getSanPham(maSP);
@@ -49,6 +59,7 @@ struct BangLuong {
 			cin >> soLuong;
 
 			thanhTien = sp.donGia * soLuong;
+			return false;
 		}
 	};
 
@@ -656,10 +667,24 @@ struct BangLuongList {
 
 			switch (cmd) {
 				case 1: {
-					int newMaBL = size() + 1;
+					int newMaBL = 1;
+					if (list.tail != NULL)
+						newMaBL = list.tail -> info.maBL + 1;
 
 					BangLuong newBangLuong = createBangLuong();
 					newBangLuong.input(newMaBL);
+
+					sanPhamList -> print();
+					cout << endl;
+
+					while (true) {
+						BangLuong::SanPhamBangLuong spbl;
+						if (!spbl.input(sanPhamList));
+							break;
+
+						newBangLuong.sanPham[newBangLuong.soLuong++] = spbl;
+					}
+
 					newBangLuong.print();
 					push(newBangLuong);
 					save();
