@@ -574,17 +574,17 @@ struct BangLuongList {
 
 	
 	/**
-	 * Sắp xếp các bảng lương theo thứ tự tăng dần 
+	 * Sắp xếp danh sách bảng lương theo lương
 	 * @author Birdchocolate said: hí ae :D
 	 */
-	void sort(bool x)
+	void sort(bool ascending = false)
 	{
 		Node *nodeFirst, *nodeSecond;
 		for (nodeFirst = list.head; nodeFirst != NULL; nodeFirst = nodeFirst -> next)
 		{
 			for (nodeSecond = nodeFirst -> next; nodeSecond != NULL; nodeSecond = nodeSecond -> next)
 			{
-				if (x)
+				if (ascending)
 				{
 					if (nodeFirst -> info.luong() > nodeSecond -> info.luong())
 					{
@@ -648,7 +648,7 @@ struct BangLuongList {
 			cout << " 5) Xóa Bảng Lương" << endl;
 			cout << " 6) Tổng Tiền Tất Cả Bảng Lương Theo Tháng" << endl;
 			cout << " 7) Tổng Tiền Tất Cả Bảng Lương Theo Năm" << endl;
-			cout << " 8) Sắp xếp lương công nhân" << endl;
+			cout << " 8) Sắp Xếp Lương Công Nhân" << endl;
 			cout << " 0) Quay Lại" << endl;
 
 			cout << endl << " > ";
@@ -769,12 +769,12 @@ struct BangLuongList {
 					break;
 				}
 				
-				case 8:{
+				case 8: {
 					bool follow = false;
 					string cmd;
 					cout << "Nhập bất kì để sắp xếp giảm dần & 'up' để tăng dần: ";
 					cin >> cmd;
-					if(cmd == "up")
+					if (cmd == "up")
 					{
 						follow = true;
 					}
