@@ -571,15 +571,20 @@ struct BangLuongList {
 	}
 
 	void print() {
-		cout << "   Mã BL       Tháng/Năm                   Công Nhân           Lương" << endl;
+		listHeader();
 
 		BangLuong bangLuong;
 		Node* node;
+		bool found = false;
 
 		for (node = list.head; node != NULL; node = node -> next) {
 			bangLuong = node -> info;
 			bangLuong.printRow();
+			found = true;
 		}
+
+		if (!found)
+			cout << endl << "                              >> TRỐNG! <<" << endl << endl;
 	}
 
 	BangLuong createBangLuong() {
@@ -677,6 +682,7 @@ struct BangLuongList {
 			cout << " 6) Tổng Tiền Tất Cả Bảng Lương Theo Tháng" << endl;
 			cout << " 7) Tổng Tiền Tất Cả Bảng Lương Theo Năm" << endl;
 			cout << " 8) Sắp Xếp Lương Công Nhân" << endl;
+			cout << " 9) Liệt Kê Các Bảng Lương Có Lương Trong Khoảng [s, e]" << endl;
 			cout << " 0) Quay Lại" << endl;
 
 			cout << endl << " > ";
@@ -824,6 +830,33 @@ struct BangLuongList {
 					print();
 				}
 
+				case 9: {
+					float start;
+					float end;
+
+					cout << "Nhập khoảng lương từ: ";
+					cin >> start;
+
+					cout << "Nhập khoảng lương đến: ";
+					cin >> end;
+
+					Node* node;
+					bool found = false;
+					cout << endl;
+					listHeader();
+
+					for (node = list.head; node != NULL; node = node -> next)
+						if (node -> info.luong() >= start && node -> info.luong() <= end) {
+							node -> info.printRow();
+							found = true;
+						}
+
+					if (!found)
+						cout << endl << "                              >> TRỐNG! <<" << endl << endl;
+
+					break;
+				}
+
 				case 0:
 					return;
 			}
@@ -833,4 +866,8 @@ struct BangLuongList {
 	private:
 		CongNhanList* congNhanList = NULL;
 		SanPhamList* sanPhamList = NULL;
+
+		void listHeader() {
+			cout << "   Mã BL       Tháng/Năm                   Công Nhân           Lương" << endl;
+		}
 };
