@@ -29,8 +29,10 @@ struct SanPham {
 	}
 
 	void input() {
-		cout << " + Mã Sản Phẩm (CCYYMMDDII): ";
-		getl(maSP);
+		if (strcmp(maSP, "UN00000000") == 0) {
+			cout << " + Mã Sản Phẩm (CCYYMMDDII): ";
+			getl(maSP);
+		}
 
 		cout << " + Tên Sản Phẩm (50 kí tự) : ";
 		getl(tenSP);
@@ -141,12 +143,14 @@ struct SanPhamList {
 			cout << "" << endl;
 			cout << " 1) Thêm Sản Phẩm" << endl;
 			cout << " 2) Hiện Danh Sách Sản Phẩm" << endl;
-			cout << " 3) Xóa Sản Phẩm" << endl;
-			cout << " 4) Tìm Kiếm Sản Phẩm" << endl;
+			cout << " 3) Chỉnh Sửa Sản Phẩm" << endl;
+			cout << " 4) Xóa Sản Phẩm" << endl;
+			cout << " 5) Tìm Kiếm Sản Phẩm" << endl;
 			cout << " 0) Quay Lại" << endl;
 
 			cout << endl << " > ";
 			cin >> cmd;
+			cout << endl;
 
 			switch (cmd) {
 				case 1: {
@@ -162,7 +166,29 @@ struct SanPhamList {
 					break;
 				}
 
-				case 3:
+				case 3: {
+					char maSP[12];
+					SanPham* sanPham;
+
+					while (true) {
+						cout << "Mã Sản Phẩm Cần Sửa: ";
+						getl(maSP);
+
+						try {
+							sanPham = getSanPham(maSP);
+							break;
+						} catch (SanPhamList::NotFound error) {
+							cout << "EXCP SanPhamList::show(): " << error.what() << endl;
+						}
+					}
+					
+					sanPham -> input();
+					save();
+
+					break;
+				}
+
+				case 4:
 					char maSP[50];
 
 					while (true) {
@@ -177,7 +203,7 @@ struct SanPhamList {
 
 					break;
 
-				case 4: {
+				case 5: {
 					char search[30];
 					bool found = false;
 
@@ -215,7 +241,7 @@ struct SanPhamList {
 	 * @throws	SanPhamList::NotFound
 	 * @return	SanPham
 	 */
-	SanPham getSanPham(char maSP[8]) {
+	SanPham* getSanPham(char maSP[8]) {
 		return __get(maSP, tree);
 	}
 
@@ -227,12 +253,11 @@ struct SanPhamList {
 	 * 
 	 * @return	SanPham
 	 */
-	SanPham getSanPhamSafe(char maSP[8]) {
+	SanPham* getSanPhamSafe(char maSP[8]) {
 		try {
 			return __get(maSP, tree);
 		} catch(NotFound e) {
-			SanPham newSanPhamThatIsVerySafeToYourRam;
-			return newSanPhamThatIsVerySafeToYourRam;
+			return new SanPham;
 		}
 	}
 
@@ -259,14 +284,14 @@ struct SanPhamList {
 			}
 		}
 
-		SanPham __get(char maSP[8], Node* root) {
+		SanPham* __get(char maSP[8], Node* root) {
 			if (root == NULL)
 				throw NotFound();
 
 			int cmp = strcmp(maSP, root -> info.maSP);
 
 			if (cmp == 0)
-				return root -> info;
+				return &root -> info;
 			else if (cmp < 0)
 				return __get(maSP, root -> left);
 			else

@@ -28,7 +28,7 @@ struct CongNhan {
 		if (maCN < 0) {
 			cout << " + Mã Công Nhân          : ";
 			cin >> maCN;
-		} else
+		} else if (newMaCN > 0)
 			maCN = newMaCN;
 
 		cout << " + Họ Tên Công Nhân      : ";
@@ -215,12 +215,14 @@ struct CongNhanList {
 			cout << "" << endl;
 			cout << " 1) Thêm Công Nhân" << endl;
 			cout << " 2) Hiện Danh Sách Công Nhân" << endl;
-			cout << " 3) Xóa Công Nhân" << endl;
-			cout << " 4) Tìm Kiếm Công Nhân" << endl;
+			cout << " 3) Chỉnh Sửa Công Nhân" << endl;
+			cout << " 4) Xóa Công Nhân" << endl;
+			cout << " 5) Tìm Kiếm Công Nhân" << endl;
 			cout << " 0) Quay Lại" << endl;
 
 			cout << endl << " > ";
 			cin >> cmd;
+			cout << endl;
 
 			switch (cmd) {
 				case 1: {
@@ -242,6 +244,28 @@ struct CongNhanList {
 
 				case 3: {
 					int maCN;
+					CongNhan* congNhan;
+
+					while (true) {
+						cout << "Mã Công Nhân Cần Sửa: ";
+						cin >> maCN;
+
+						try {
+							congNhan = getCongNhan(maCN);
+							break;
+						} catch (CongNhanList::NotFound error) {
+							cout << "EXCP CongNhanList::show(): " << error.what() << endl;
+						}
+					}
+					
+					congNhan -> input();
+					save();
+
+					break;
+				}
+
+				case 4: {
+					int maCN;
 
 					while (true) {
 						cout << "Nhập mã Công Nhân (-1 để hủy): ";
@@ -256,7 +280,7 @@ struct CongNhanList {
 					break;
 				}
 
-				case 4: {
+				case 5: {
 					Node* node;
 					char search[30];
 					bool found = false;
@@ -302,12 +326,12 @@ struct CongNhanList {
 	 * @throws	CongNhanList::NotFound
 	 * @return	CongNhan
 	 */
-	CongNhan getCongNhan(int maCN) {
+	CongNhan* getCongNhan(int maCN) {
 		Node* node;
 
 		for (node = list.head; node != NULL; node = node -> next)
 			if (node -> info.maCN == maCN)
-				return node -> info;
+				return &node -> info;
 
 		throw NotFound();
 	}

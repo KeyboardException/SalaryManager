@@ -17,7 +17,7 @@ void getl(char value[]) {
 
 char* truncate(char* input, int length = 12) {
 	if (strlen(input) > length) {
-		char* temp = (char *) malloc(sizeof(input));
+		char* temp = (char *) malloc(sizeof(char) * strlen(input));
 		strcpy(temp, input);
 
 		temp[length - 1] = temp[length - 2] = temp[length - 3] = '.';

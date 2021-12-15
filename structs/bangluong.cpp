@@ -38,7 +38,7 @@ struct BangLuong {
 				return false;
 			}
 
-			SanPham sp;
+			SanPham* sp;
 			while (true) {
 				cout << " + Nhập Mã Sản Phẩm (-1 để hủy): ";
 				getl(maSP);
@@ -58,7 +58,7 @@ struct BangLuong {
 			cout << " + Số Lượng        : ";
 			cin >> soLuong;
 
-			thanhTien = sp.donGia * soLuong;
+			thanhTien = sp -> donGia * soLuong;
 			return false;
 		}
 	};
@@ -98,7 +98,7 @@ struct BangLuong {
 			exit(1);
 		}
 
-		return congNhanList -> getCongNhan(maCN);
+		return *congNhanList -> getCongNhan(maCN);
 	}
 
 	/**
@@ -116,7 +116,7 @@ struct BangLuong {
 		CongNhan congNhan;
 
 		try {
-			congNhan = congNhanList -> getCongNhan(maCN);
+			congNhan = *congNhanList -> getCongNhan(maCN);
 		} catch(CongNhanList::NotFound e) {
 			// No further action needed.
 		}
@@ -183,20 +183,20 @@ struct BangLuong {
 
 		tongTien = .0f;
 		if (soLuong > 0) {
-			SanPham sp;
+			SanPham* sp;
 
 			for (int i = 0; i < soLuong; i++) {
 				try {
 					sp = sanPhamList -> getSanPham(sanPham[i].maSP);
 				} catch(SanPhamList::NotFound e) {
-					sp = *new SanPham;
+					sp = new SanPham;
 				}
 
 				cout << "   |  "
 					<< right << setw(3) << i + 1 << "   "
-					<< left << setw(33) << truncate(sp.tenSP, 32)
+					<< left << setw(33) << truncate(sp -> tenSP, 32)
 					<< right << setw(2) << sanPham[i].soLuong << " "
-					<< right << setw(10) << sp.donGia
+					<< right << setw(10) << sp -> donGia
 					<< right << setw(19) << setprecision(1) << fixed << sanPham[i].thanhTien
 					<< "  |" << endl;
 
@@ -378,7 +378,7 @@ struct BangLuong {
 						}
 
 						cout << "Đã xóa Sản Phẩm "
-							 << sanPhamList -> getSanPhamSafe(sanPham[stt - 1].maSP).tenSP
+							 << sanPhamList -> getSanPhamSafe(sanPham[stt - 1].maSP) -> tenSP
 							 << endl;
 
 						for (int i = stt - 1; i < soLuong; i++)
@@ -687,6 +687,7 @@ struct BangLuongList {
 
 			cout << endl << " > ";
 			cin >> cmd;
+			cout << endl;
 
 			switch (cmd) {
 				case 1: {
