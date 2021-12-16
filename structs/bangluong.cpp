@@ -696,8 +696,7 @@ struct BangLuongList {
 
 					while (true) {
 						BangLuong::SanPhamBangLuong spbl;
-						bool check = spbl.input(sanPhamList);
-						if (!check);
+						if (!spbl.input(sanPhamList))
 							break;
 
 						newBangLuong.sanPham[newBangLuong.soLuong++] = spbl;
