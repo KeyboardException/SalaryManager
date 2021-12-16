@@ -33,11 +33,6 @@ struct BangLuong {
 		 * @return	false	Nếu nhập bị lỗi hoặc người dùng hủy nhập
 		 */
 		bool input(SanPhamList* sanPhamList) {
-			if (sanPhamList == NULL) {
-				cout << "WARN BangLuong::SanPhamBangLuong::input(): sanPhamList is NULL! Please set it first before calling this function." << endl;
-				return false;
-			}
-
 			SanPham* sp;
 			while (true) {
 				cout << " + Nhập Mã Sản Phẩm (-1 để hủy): ";
@@ -51,7 +46,7 @@ struct BangLuong {
 					cout << "   Sản Phẩm " << *sp << endl;
 					break;
 				} catch (SanPhamList::NotFound error) {
-					cout << "EXCP BangLuong::show(2): " << error.what() << endl;
+					cout << "EXCP BangLuong::show(): " << error.what() << endl;
 				}
 			}
 
@@ -59,7 +54,7 @@ struct BangLuong {
 			cin >> soLuong;
 
 			thanhTien = sp -> donGia * soLuong;
-			return false;
+			return true;
 		}
 	};
 
@@ -421,7 +416,7 @@ struct BangLuong {
 				cin >> maCN;
 
 				try {
-					cout << "   Công Nhân " << congNhanList -> getCongNhan(maCN) << endl;
+					cout << "   Công Nhân " << *congNhanList -> getCongNhan(maCN) << endl;
 				} catch(CongNhanList::NotFound error) {
 					cout << "EXCP BangLuong::inputMaCN(): " << error.what() << endl;
 					continue;
@@ -701,7 +696,8 @@ struct BangLuongList {
 
 					while (true) {
 						BangLuong::SanPhamBangLuong spbl;
-						if (!spbl.input(sanPhamList));
+						bool check = spbl.input(sanPhamList);
+						if (!check);
 							break;
 
 						newBangLuong.sanPham[newBangLuong.soLuong++] = spbl;

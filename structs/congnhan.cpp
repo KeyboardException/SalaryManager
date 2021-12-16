@@ -209,6 +209,25 @@ struct CongNhanList {
 			node -> info.print();
 	}
 
+	void printByCountry(char* country) {
+		listHeader();
+		Node* node;
+
+		for (node = list.head; node != NULL; node = node -> next)
+			if (strcasecmp(node -> info.queQuan, country) == 0)
+				node -> info.print();
+	}
+
+	void sortByName() {
+		Node* i;
+		Node* j;
+
+		for (i = list.head; i != NULL; i = i -> next)
+			for (j = i -> next; j != NULL; j = j -> next)
+				if (strcmp(i -> info.hoTen, j -> info.hoTen) >= 0)
+					swap(i -> info, j -> info);
+	}
+
 	void show() {
 		int cmd;
 		while (true) {
@@ -218,6 +237,8 @@ struct CongNhanList {
 			cout << " 3) Chỉnh Sửa Công Nhân" << endl;
 			cout << " 4) Xóa Công Nhân" << endl;
 			cout << " 5) Tìm Kiếm Công Nhân" << endl;
+			cout << " 6) Sắp Xếp Công Nhân Theo Họ Tên" << endl;
+			cout << " 7) Hiện Danh Sách Công Nhân Theo Quê Quán" << endl;
 			cout << " 0) Quay Lại" << endl;
 
 			cout << endl << " > ";
@@ -302,6 +323,22 @@ struct CongNhanList {
 					if (!found)
 						cout << endl << "                             >> TRỐNG <<" << endl << endl;
 
+					break;
+				}
+
+				case 6: {
+					sortByName();
+					print();
+					save();
+					break;
+				}
+
+				case 7: {
+					char country[20];
+					cout << "Nhập Quê Quán: ";
+					getl(country);
+
+					printByCountry(country);
 					break;
 				}
 
