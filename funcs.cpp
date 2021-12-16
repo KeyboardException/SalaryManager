@@ -7,6 +7,8 @@
 
 #pragma once
 #include <iostream>
+#include <stdlib.h>
+#include <string.h>
 
 using namespace std;
 
@@ -17,7 +19,7 @@ void getl(char value[]) {
 
 char* truncate(char* input, int length = 12) {
 	if (strlen(input) > length) {
-		char* temp = (char *) malloc(sizeof(char *) * strlen(input));
+		char* temp = (char *) malloc(strlen(input) + 1);
 		strcpy(temp, input);
 
 		temp[length - 1] = temp[length - 2] = temp[length - 3] = '.';

@@ -48,7 +48,7 @@ struct BangLuong {
 
 				try {
 					sp = sanPhamList -> getSanPham(maSP);
-					cout << "   Sản Phẩm " << sp << endl;
+					cout << "   Sản Phẩm " << *sp << endl;
 					break;
 				} catch (SanPhamList::NotFound error) {
 					cout << "EXCP BangLuong::show(2): " << error.what() << endl;
@@ -159,27 +159,27 @@ struct BangLuong {
 		CongNhan congNhan = getCongNhanSafe();
 
 		// Header
-		cout << endl << "   |******************************** BẢNG LƯƠNG *******************************|" << endl;
+		cout << endl << "   |********************************* BẢNG LƯƠNG ********************************|" << endl;
 
 		// First Line
 		char thangNam[8];
 		thangNamString(thangNam);
 		cout << "   |  Mã Bảng Lương:     "
-			 << left << setw(40) << maBL
+			 << left << setw(42) << maBL
 			 << right << setw(12) << thangNam
 			 << "  |" << endl;
 
 		// Second Line
 		cout << "   |  Công Nhân:         "
-			 << left << setw(40) << congNhan
+			 << left << setw(42) << congNhan
 			 << right << setw(12) << congNhan.ngaySinh
 			 << "  |" << endl;
 		
-		cout << "   |                                                                           |" << endl;
-		cout << "   |  Danh sách sản phẩm:                                                      |" << endl;
+		cout << "   |                                                                             |" << endl;
+		cout << "   |  Danh sách sản phẩm:                                                        |" << endl;
 
 		// Table
-		cout << "   |  STT   Tên SP                           SL    Đơn Giá         Thành Tiền  |" << endl;
+		cout << "   |  STT   Tên SP                           SL      Đơn Giá         Thành Tiền  |" << endl;
 
 		tongTien = .0f;
 		if (soLuong > 0) {
@@ -196,39 +196,37 @@ struct BangLuong {
 					<< right << setw(3) << i + 1 << "   "
 					<< left << setw(33) << truncate(sp -> tenSP, 32)
 					<< right << setw(2) << sanPham[i].soLuong << " "
-					<< right << setw(10) << sp -> donGia
+					<< right << setw(12) << setprecision(1) << fixed << sp -> donGia
 					<< right << setw(19) << setprecision(1) << fixed << sanPham[i].thanhTien
 					<< "  |" << endl;
 
 				tongTien += sanPham[i].thanhTien;
 			}
-
-			delete &sp;
 		} else {
-			cout << "   |                                                                           |" << endl
-				 << "   |                              >>> TRỐNG! <<<                               |" << endl
-				 << "   |                                                                           |" << endl;
+			cout << "   |                                                                             |" << endl
+				 << "   |                               >>> TRỐNG! <<<                                |" << endl
+				 << "   |                                                                             |" << endl;
 		}
 
-		cout << "   |                                                   ----------------------  |" << endl;
-		cout << "   |                                                   TỔNG:"
+		cout << "   |                                                     ----------------------  |" << endl;
+		cout << "   |                                                     TỔNG:"
 			 << right << setw(17) << setprecision(1) << fixed << tongTien
 			 << "  |" << endl;
 
-		cout << "   |                                             LƯƠNG CỨNG:"
+		cout << "   |                                               LƯƠNG CỨNG:"
 			 << right << setw(17) << setprecision(1) << fixed << luongCung
 			 << "  |" << endl;
 
-		cout << "   |                                              THUẾ ("
+		cout << "   |                                                THUẾ ("
 			 << setprecision(0) << fixed << (thue * 100) << "%):"
 			 << right << setw(17) << setprecision(1) << fixed << (tongTien + luongCung) * thue
 			 << "  |" << endl;
 
-		cout << "   |                                                  LƯƠNG:"
+		cout << "   |                                                    LƯƠNG:"
 			 << right << setw(17) << setprecision(1) << fixed << luong()
 			 << "  |" << endl;
 
-		cout << "   |***************************************************************************|" << endl;
+		cout << "   |*****************************************************************************|" << endl;
 	}
 
 	void printRow() {
