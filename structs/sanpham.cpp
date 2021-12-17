@@ -8,14 +8,13 @@
  * @version	1.0
  */
 
-
-/*
 // bổ sung cột số lượng và sỉ lẻ if sl > 100 -> bán sỉ sl < 100 -> bán lẻ
 // bổ sung cột phí vận chuyển 
 //nếu sỉ thì phí free
 // nếu lẻ thì phí = 5% sl*dongia
+// 1. in ra mh dssp co phi vc > 0
+// 2. sap xep danh sach theo si le
 
-*/
 #pragma once
 #include <iostream>
 #include <cstring>
@@ -28,12 +27,23 @@ struct SanPham {
 	char maSP[12] = "UN00000000";
 	char tenSP[50] = "EMPTY";
 	float donGia = -1.0f;
+	int soLuong;
 
 	void print() {
 		cout << setw(12) << maSP
-			 << setw(44) << tenSP
+			 << setw(40) << truncate(tenSP, 38)
 			 << setw(20) << setprecision(1) << fixed << donGia
-			 << endl;
+			 << setw(17) << soLuong
+			 << setw(11) << (isBanSi() ? 'S' : 'L');
+
+		float phi = phiVanChuyen();
+
+		if (phi == 0)
+			cout << setw(24) << "MIEN PHI";
+		else
+			cout << setw(24) << phi;
+
+		cout << endl;
 	}
 
 	void input() {
@@ -47,6 +57,17 @@ struct SanPham {
 
 		cout << " + Đơn Giá                 : ";
 		cin >> donGia;
+
+		cout << " + Số Lượng                : ";
+		cin >> soLuong;
+	}
+
+	bool isBanSi() {
+		return soLuong > 100;
+	}
+
+	float phiVanChuyen() {
+		return isBanSi() ? 0 : ((float) soLuong * donGia) * 0.5f;
 	}
 
 	friend ostream &operator<<(ostream &os, SanPham sp) {
@@ -145,6 +166,17 @@ struct SanPhamList {
 		return __size(tree);
 	}
 
+	void inSanPhamCoPhiShip() {
+		listHeader();
+		__printY1(tree);
+	}
+
+	void sortSanPhamSiLe() {
+		listHeader();
+		__printY2(tree, true);
+		__printY2(tree, false);
+	}
+
 	void show() {
 		int cmd;
 		while (true) {
@@ -154,6 +186,8 @@ struct SanPhamList {
 			cout << " 3) Chỉnh Sửa Sản Phẩm" << endl;
 			cout << " 4) Xóa Sản Phẩm" << endl;
 			cout << " 5) Tìm Kiếm Sản Phẩm" << endl;
+			cout << " 6) In Sản Phẩm Có Phí Vận Chuyển" << endl;
+			cout << " 7) Sắp Xếp Sản Phẩm Xỉ Lẻ" << endl;
 			cout << " 0) Quay Lại" << endl;
 
 			cout << endl << " > ";
@@ -227,6 +261,14 @@ struct SanPhamList {
 					break;
 				}
 
+				case 6:
+					inSanPhamCoPhiShip();
+					break;
+
+				case 7:
+					sortSanPhamSiLe();
+					break;
+
 				case 0:
 					return;
 			}
@@ -271,7 +313,7 @@ struct SanPhamList {
 
 	private:
 		void listHeader() {
-			cout << "       Mã SP                                      Tên SP             Đơn Giá" << endl;
+			cout << "       Mã SP                                  Tên SP             Đơn Giá         Số Lượng      Sỉ/Lẻ          Phí Vận Chuyển" << endl;
 		}
 
 		void __insert(SanPham info, Node* &root) {
@@ -316,6 +358,30 @@ struct SanPhamList {
 			root -> info.print();
 
 			__printLNR(root -> right, found);
+		}
+
+		void __printY1(Node* root) {
+			if (root == NULL)
+				return;
+
+			__printY1(root -> left);
+
+			if (root -> info.phiVanChuyen() > 0)
+				root -> info.print();
+
+			__printY1(root -> right);
+		}
+
+		void __printY2(Node* root, bool isBanSi) {
+			if (root == NULL)
+				return;
+
+			__printY2(root -> left, isBanSi);
+
+			if ((isBanSi == root -> info.isBanSi()))
+				root -> info.print();
+
+			__printY2(root -> right, isBanSi);
 		}
 
 		void __searchLNR(Node* root, char* search, bool &found) {
