@@ -8,6 +8,14 @@
  * @version	1.0
  */
 
+
+/*
+// bổ sung cột số lượng và sỉ lẻ if sl > 100 -> bán sỉ sl < 100 -> bán lẻ
+// bổ sung cột phí vận chuyển 
+//nếu sỉ thì phí free
+// nếu lẻ thì phí = 5% sl*dongia
+
+*/
 #pragma once
 #include <iostream>
 #include <cstring>
