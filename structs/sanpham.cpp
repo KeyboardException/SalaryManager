@@ -8,12 +8,6 @@
  * @version	1.0
  */
 
-// bổ sung cột số lượng và sỉ lẻ if sl > 100 -> bán sỉ sl < 100 -> bán lẻ
-// bổ sung cột phí vận chuyển 
-//nếu sỉ thì phí free
-// nếu lẻ thì phí = 5% sl*dongia
-// 1. in ra mh dssp co phi vc > 0
-// 2. sap xep danh sach theo si le
 
 #pragma once
 #include <iostream>
@@ -359,7 +353,7 @@ struct SanPhamList {
 
 			__printLNR(root -> right, found);
 		}
-
+		// in sản phẩm có phí vận chuyển
 		void __printY1(Node* root) {
 			if (root == NULL)
 				return;
@@ -371,7 +365,7 @@ struct SanPhamList {
 
 			__printY1(root -> right);
 		}
-
+		// Sắp xếp sản phẩm sỉ lẻ.
 		void __printY2(Node* root, bool isBanSi) {
 			if (root == NULL)
 				return;
