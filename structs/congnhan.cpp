@@ -237,8 +237,8 @@ struct CongNhanList {
 			cout << " 3) Chỉnh Sửa Công Nhân" << endl;
 			cout << " 4) Xóa Công Nhân" << endl;
 			cout << " 5) Tìm Kiếm Công Nhân" << endl;
-			cout << " 6) Sắp Xếp Công Nhân Theo Họ Tên" << endl;
-			cout << " 7) Hiện Danh Sách Công Nhân Theo Quê Quán" << endl;
+			// cout << " 6) Sắp Xếp Công Nhân Theo Họ Tên" << endl;
+			// cout << " 7) Hiện Danh Sách Công Nhân Theo Quê Quán" << endl;
 			cout << " 0) Quay Lại" << endl;
 
 			cout << endl << " > ";

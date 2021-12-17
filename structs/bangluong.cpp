@@ -674,8 +674,8 @@ struct BangLuongList {
 			cout << " 5) Xóa Bảng Lương" << endl;
 			cout << " 6) Tổng Tiền Tất Cả Bảng Lương Theo Tháng" << endl;
 			cout << " 7) Tổng Tiền Tất Cả Bảng Lương Theo Năm" << endl;
-			cout << " 8) Sắp Xếp Lương Công Nhân" << endl;
-			cout << " 9) Liệt Kê Các Bảng Lương Có Lương Trong Khoảng [s, e]" << endl;
+			// cout << " 8) Sắp Xếp Lương Công Nhân" << endl;
+			// cout << " 9) Liệt Kê Các Bảng Lương Có Lương Trong Khoảng [s, e]" << endl;
 			cout << " 0) Quay Lại" << endl;
 
 			cout << endl << " > ";
