@@ -7,6 +7,9 @@
  * @version	1.0
  */
 
+// 1) In thông tin của bảng lương mà có đơn giá là (x,y) với x y nhập từ bàn phím
+// 2) Đếm xem bao nhiêu bảng lương có thành tiền nhỏ nhất
+
 #pragma once
 #include <iostream>
 #include <iomanip>
