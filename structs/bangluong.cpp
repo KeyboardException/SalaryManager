@@ -3,7 +3,11 @@
  * 
  * File này chứa khai báo cấu trúc của đối tượng Sản Phẩm của Bảng Lương, 
  * Bảng Lương và Danh Sách Bảng Lương. Danh sách sử dụng liên kết đôi.
- * 
+ * 1, Bảng lương thêm số lượng, số ngày làm việc, mức lương
+ * lương = số ngày làm việc * mức lương 
+ * in ra màn hình danh sách các nhân viên có mức lương cao nhất 
+ * 2, sắp xếp danh sách theo theo địa chỉ vs địa chỉ nhập vào từ bàn phím
+ *
  * @version	1.0
  */
 
