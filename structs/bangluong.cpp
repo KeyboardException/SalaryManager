@@ -719,6 +719,8 @@ struct BangLuongList {
 			cout << " 7) Tổng Tiền Tất Cả Bảng Lương Theo Năm" << endl;
 			cout << " 8) Sắp Xếp Lương Công Nhân" << endl;
 			cout << " 9) Liệt Kê Các Bảng Lương Có Lương Trong Khoảng [s, e]" << endl;
+			cout << "10) Công Nhân Có Mức Lương Cao Nhất" << endl;
+			cout << "11) Sắp Xếp Theo Địa Chỉ" << endl;
 			cout << " 0) Quay Lại" << endl;
 
 			cout << endl << " > ";
@@ -895,6 +897,11 @@ struct BangLuongList {
 				}
 
 				case 10: {
+					mucLuongCaoNhat();
+					break;
+				}
+
+				case 11: {
 					sortDiaChi();
 					print();
 					save();
