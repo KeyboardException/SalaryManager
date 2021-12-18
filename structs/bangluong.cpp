@@ -656,6 +656,25 @@ struct BangLuongList {
 		sanPhamList = list;
 	}
 
+	void demMin() {
+		float min = list.head -> info.luong();;
+		int dem = 0;
+		Node* node;
+
+		for (node = list.head; node != NULL; node = node -> next)
+			if (min > node -> info.luong())
+				min = node -> info.luong();
+
+		listHeader();
+		for (node = list.head; node != NULL; node = node -> next)
+			if (min - node -> info.luong() < 0.01f && min - node -> info.luong() > -0.01f) {
+				dem++;
+				node -> info.printRow();
+			}
+
+		cout << "Số Lượng: " << dem << endl << endl;
+	}
+
 	void show() {
 		if (congNhanList == NULL) {
 			cout << "WARN BangLuongList::show(): set CongNhan list first :bruh:" << endl;
@@ -677,8 +696,7 @@ struct BangLuongList {
 			cout << " 5) Xóa Bảng Lương" << endl;
 			cout << " 6) Tổng Tiền Tất Cả Bảng Lương Theo Tháng" << endl;
 			cout << " 7) Tổng Tiền Tất Cả Bảng Lương Theo Năm" << endl;
-			// cout << " 8) Sắp Xếp Lương Công Nhân" << endl;
-			// cout << " 9) Liệt Kê Các Bảng Lương Có Lương Trong Khoảng [s, e]" << endl;
+			cout << " 9) Danh Sách Bảng Lương Có Thành Tiền Nhỏ Nhất" << endl;
 			cout << " 0) Quay Lại" << endl;
 
 			cout << endl << " > ";
@@ -813,44 +831,9 @@ struct BangLuongList {
 					
 					break;
 				}
-				
-				case 8: {
-					bool follow = false;
-					string cmd;
-					cout << "Nhập bất kì để sắp xếp giảm dần & 'up' để tăng dần: ";
-					cin >> cmd;
-					if (cmd == "up")
-					{
-						follow = true;
-					}
-					sort(follow);
-					print();
-				}
 
 				case 9: {
-					float start;
-					float end;
-
-					cout << "Nhập khoảng lương từ: ";
-					cin >> start;
-
-					cout << "Nhập khoảng lương đến: ";
-					cin >> end;
-
-					Node* node;
-					bool found = false;
-					cout << endl;
-					listHeader();
-
-					for (node = list.head; node != NULL; node = node -> next)
-						if (node -> info.luong() >= start && node -> info.luong() <= end) {
-							node -> info.printRow();
-							found = true;
-						}
-
-					if (!found)
-						cout << endl << "                              >> TRỐNG! <<" << endl << endl;
-
+					demMin();
 					break;
 				}
 
