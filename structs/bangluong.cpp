@@ -236,6 +236,7 @@ struct BangLuong {
 		cout << setw(8) << maBL
 			 << setw(16) << thangNam
 			 << setw(28) << congNhan.hoTen
+			 << setw(23) << setprecision(1) << fixed << tongTien
 			 << setw(16) << setprecision(1) << fixed << luong()
 			 << endl;
 	}
@@ -696,6 +697,7 @@ struct BangLuongList {
 			cout << " 5) Xóa Bảng Lương" << endl;
 			cout << " 6) Tổng Tiền Tất Cả Bảng Lương Theo Tháng" << endl;
 			cout << " 7) Tổng Tiền Tất Cả Bảng Lương Theo Năm" << endl;
+			cout << " 8) Danh Sách Bảng Lương Có Tổng Đơn Giá Là (a, b)" << endl;
 			cout << " 9) Danh Sách Bảng Lương Có Thành Tiền Nhỏ Nhất" << endl;
 			cout << " 0) Quay Lại" << endl;
 
@@ -831,6 +833,33 @@ struct BangLuongList {
 					
 					break;
 				}
+				
+				case 8: {
+					float start;
+					float end;
+
+					cout << "Nhập x: ";
+					cin >> start;
+
+					cout << "Nhập y: ";
+					cin >> end;
+
+					Node* node;
+					bool found = false;
+					cout << endl;
+					listHeader();
+
+					for (node = list.head; node != NULL; node = node -> next)
+						if (node -> info.tongTien > start && node -> info.tongTien < end) {
+							node -> info.printRow();
+							found = true;
+						}
+
+					if (!found)
+						cout << endl << "                              >> TRỐNG! <<" << endl << endl;
+
+					break;
+				}
 
 				case 9: {
 					demMin();
@@ -848,6 +877,6 @@ struct BangLuongList {
 		SanPhamList* sanPhamList = NULL;
 
 		void listHeader() {
-			cout << "   Mã BL       Tháng/Năm                   Công Nhân           Lương" << endl;
+			cout << "   Mã BL       Tháng/Năm                   Công Nhân           Tổng Đơn Giá           Lương" << endl;
 		}
 };
