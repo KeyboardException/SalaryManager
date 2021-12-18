@@ -241,10 +241,11 @@ struct BangLuong {
 		cout << setw(8) << maBL
 			 << setw(16) << thangNam
 			 << setw(28) << congNhan.hoTen
-			 << setw(17) << soLuong
-			 << setw(22) << soNgay
-			 << setw(25) << setprecision(1) << fixed << mucLuong
+			 << setw(9) << soLuong
+			 << setw(14) << soNgay
+			 << setw(18) << setprecision(1) << fixed << mucLuong
 			 << setw(16) << setprecision(1) << fixed << luong()
+			 << setw(20) << diaChi
 			 << endl;
 	}
 
@@ -688,7 +689,7 @@ struct BangLuongList {
 		Node* max = list.head;
 		Node* node;
 
-		for (node = list.head; node != NULL; node -> next)
+		for (node = list.head; node != NULL; node = node -> next)
 			if (node -> info.mucLuong > max -> info.mucLuong)
 				max = node;
 
@@ -919,6 +920,6 @@ struct BangLuongList {
 		SanPhamList* sanPhamList = NULL;
 
 		void listHeader() {
-			cout << "   Mã BL       Tháng/Năm                   Công Nhân            Số SP            Số Ngày LV                Mức Lương           Lương" << endl;
+			cout << "   Mã BL       Tháng/Năm                   Công Nhân    Số SP    Số Ngày LV         Mức Lương           Lương             Địa Chỉ" << endl;
 		}
 };
