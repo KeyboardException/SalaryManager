@@ -656,7 +656,8 @@ struct BangLuongList {
 	void setSanPhamList(SanPhamList *list) {
 		sanPhamList = list;
 	}
-
+	// cá 90
+	
 	void demMin() {
 		float min = list.head -> info.luong();;
 		int dem = 0;
