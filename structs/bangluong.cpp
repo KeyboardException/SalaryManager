@@ -3,6 +3,7 @@
  * 
  * File này chứa khai báo cấu trúc của đối tượng Sản Phẩm của Bảng Lương, 
  * Bảng Lương và Danh Sách Bảng Lương. Danh sách sử dụng liên kết đôi.
+ * 
  * 1, Bảng lương thêm số lượng, số ngày làm việc, mức lương
  * lương = số ngày làm việc * mức lương 
  * in ra màn hình danh sách các nhân viên có mức lương cao nhất 
@@ -18,7 +19,7 @@
 #include <congnhan.cpp>
 #include <sanpham.cpp>
 
-const float LUONG_CUNG = 5500000.0f;
+const float MUC_LUONG = 250000.0f;
 const float THUE = 0.01f;
 
 struct BangLuongList;
@@ -68,7 +69,9 @@ struct BangLuong {
 	int maCN;
 	SanPhamBangLuong sanPham[50];
 	int soLuong = 0;
-	float luongCung = LUONG_CUNG;
+	float mucLuong = MUC_LUONG;
+	char diaChi[50];
+	int soNgay = 0;
 	float thue = THUE;
 	float tongTien = .0f;
 	
@@ -81,7 +84,8 @@ struct BangLuong {
 	}
 
 	float luong() {
-		return (tongTien + luongCung) * (1 - thue);
+		// return (tongTien + mucLuong) * (1 - thue);
+		return (soNgay * mucLuong);
 	}
 
 	/**
@@ -213,12 +217,12 @@ struct BangLuong {
 			 << "  |" << endl;
 
 		cout << "   |                                               LƯƠNG CỨNG:"
-			 << right << setw(17) << setprecision(1) << fixed << luongCung
+			 << right << setw(17) << setprecision(1) << fixed << mucLuong
 			 << "  |" << endl;
 
 		cout << "   |                                                THUẾ ("
 			 << setprecision(0) << fixed << (thue * 100) << "%):"
-			 << right << setw(17) << setprecision(1) << fixed << (tongTien + luongCung) * thue
+			 << right << setw(17) << setprecision(1) << fixed << (tongTien + mucLuong) * thue
 			 << "  |" << endl;
 
 		cout << "   |                                                    LƯƠNG:"
@@ -237,6 +241,9 @@ struct BangLuong {
 		cout << setw(8) << maBL
 			 << setw(16) << thangNam
 			 << setw(28) << congNhan.hoTen
+			 << setw(17) << soLuong
+			 << setw(22) << soNgay
+			 << setw(25) << setprecision(1) << fixed << mucLuong
 			 << setw(16) << setprecision(1) << fixed << luong()
 			 << endl;
 	}
@@ -255,7 +262,13 @@ struct BangLuong {
 			cout << " + Năm            : ";
 			cin >> nam;
 
+			cout << " + Số Ngày LV     : ";
+			cin >> soNgay;
+
 			inputMaCN(" + Mã Công Nhân   ");
+
+			cout << " + Địa Chỉ        : ";
+			getl(diaChi);
 		} else {
 			cout << " + Tháng (" << setw(2) << thang << ")          : ";
 			cin >> thang;
@@ -263,9 +276,15 @@ struct BangLuong {
 			cout << " + Năm (" << setw(4) << nam << ")          : ";
 			cin >> nam;
 
+			cout << " + Số Ngày LV          : ";
+			cin >> soNgay;
+
 			stringstream msg;
 			msg << " + Mã Công Nhân (" << setw(2) << maCN << ") ";
 			inputMaCN(msg.str());
+
+			cout << " + Địa Chỉ             : ";
+			getl(diaChi);
 		}
 
 		initialized = true;
@@ -295,7 +314,7 @@ struct BangLuong {
 			cout << endl;
 			cout << "   1. Chỉnh Sửa Thông Tin" << endl
 				 << "   2. Thêm Sản Phẩm             3. Chỉnh Sửa Sản Phẩm" << endl
-				 << "   4. Sửa Lương Cứng            5. Sửa % Thuế" << endl
+				 << "   4. Sửa Mức Lương             5. Sửa % Thuế" << endl
 				 << "   6. Xóa Sản Phẩm";
 
 			if (isRemoveAvailable)
@@ -345,10 +364,10 @@ struct BangLuong {
 
 				case 4: {
 					cout << "Lương Cứng Mới ("
-						 << setprecision(1) << fixed << luongCung
+						 << setprecision(1) << fixed << mucLuong
 						 << "): ";
 
-					cin >> luongCung;
+					cin >> mucLuong;
 					break;
 				}
 
@@ -632,6 +651,14 @@ struct BangLuongList {
 		}
 	}
 
+	void sortDiaChi() {
+		Node *nodeFirst, *nodeSecond;
+		for (nodeFirst = list.head; nodeFirst != NULL; nodeFirst = nodeFirst -> next)
+			for (nodeSecond = nodeFirst -> next; nodeSecond != NULL; nodeSecond = nodeSecond -> next)
+				if (strcmp(nodeFirst -> info.diaChi, nodeSecond -> info.diaChi) > 0)
+					swap(nodeFirst -> info, nodeSecond -> info);
+	}
+
 	class NotFound : public exception {
 		public:
 			const char* what() const throw () {
@@ -655,6 +682,18 @@ struct BangLuongList {
 
 	void setSanPhamList(SanPhamList *list) {
 		sanPhamList = list;
+	}
+
+	void mucLuongCaoNhat() {
+		Node* max = list.head;
+		Node* node;
+
+		for (node = list.head; node != NULL; node -> next)
+			if (node -> info.mucLuong > max -> info.mucLuong)
+				max = node;
+
+		CongNhan maxCN = max -> info.getCongNhanSafe();
+		cout << "Công Nhân có mức lương cao nhất: " << maxCN << setprecision(1) << fixed << " (" << max -> info.mucLuong << ")";
 	}
 
 	void show() {
@@ -855,6 +894,13 @@ struct BangLuongList {
 					break;
 				}
 
+				case 10: {
+					sortDiaChi();
+					print();
+					save();
+					break;
+				}
+
 				case 0:
 					return;
 			}
@@ -866,6 +912,6 @@ struct BangLuongList {
 		SanPhamList* sanPhamList = NULL;
 
 		void listHeader() {
-			cout << "   Mã BL       Tháng/Năm                   Công Nhân           Lương" << endl;
+			cout << "   Mã BL       Tháng/Năm                   Công Nhân            Số SP            Số Ngày LV                Mức Lương           Lương" << endl;
 		}
 };
