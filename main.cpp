@@ -1,16 +1,21 @@
 /**
+ * Copyright (C) Team KeyboardOverflow - contact.kbexcp@gmail.com
+ *
+ * We publish and distribute this code in the hope that it will be useful
+ * for learning purpose, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * Anyone can refer to this source code and the document come alongside
+ * with it. DO NOT COPY AND PASTE this code, or the document into your own
+ * personal/group project.
+ */
+
+/**
  * PROGRAM ENTRY FILE
  * 
  * BTL Cấu Trúc Dữ Liệu & Giải Thuật - Nhóm 02
  * 
- * Thành Viên:
- *  + Nguyễn Đức Cảnh	- 2010A01
- *  + Vũ Tuấn Đạt 		- 2010A01
- *  + Đỗ Mạnh Hà 		- 2010A03
- *  + Nguyễn Văn Thụy 	- 2010A01
- * 
  * File Báo Cáo:
- * https://1drv.ms/w/s!AgsItGd8_BzBiQqZ0AON0kHPf45R
+ * BÁO CÁO.docx (nằm trong project này)
  * 
  * @version	1.0
  * @license	MIT
